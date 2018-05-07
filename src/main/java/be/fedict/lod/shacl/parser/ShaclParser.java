@@ -31,6 +31,9 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyDatatype;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
+import java.io.File;
+import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -45,6 +48,9 @@ import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.SHACL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Parse SHACL
@@ -52,13 +58,12 @@ import org.eclipse.rdf4j.model.vocabulary.SHACL;
  * @author Bart.Hanssens
  */
 public class ShaclParser {	
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclParser.class);
 	
 	/**
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @param path
-	 * @param target 
 	 * @return rule or null
 	 * @throws ShaclParserException 
 	 */
@@ -150,6 +155,12 @@ public class ShaclParser {
 				// Constraints
 				Model constraints = m.filter(propId, null, null);
 				
+				boolean disabled = ShaclParserHelper.asBool(constraints, SHACL.DEACTIVATED);
+				if(disabled) {
+					LOG.info("Skipping deactivated shape {}", propId);
+					continue;
+				}
+				
 				IRI path = ShaclParserHelper.asIRI(constraints, SHACL.PATH);
 				propShape.setPath(path);
 				
@@ -172,14 +183,4 @@ public class ShaclParser {
 		}
 		return shapes;
 	}
-	/*
-	public static void parseG(Set<ShaclNodeShape> shapes) {
-		for (ShaclNodeShape shape: shapes) {
-			Set<IRI> targetClasses = shape.getTargetClasses();
-			
-			shape.getProperties().sort(Comparator.comparing(p -> p.getOrder()));
-			shape.getLabels()
-		}
-	}
-	} */
 }

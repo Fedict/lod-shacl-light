@@ -37,11 +37,16 @@ import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Bart.Hanssens
  */
 public abstract class ShaclShape {
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclShape.class);
+	
 	private final Resource id;
 	
 	private final Set<IRI> targetClasses = new HashSet<>();
@@ -104,6 +109,7 @@ public abstract class ShaclShape {
 	
 	public void addConstraint(ShaclConstraint constraint) {
 		if (constraint != null) {
+			LOG.info("Adding shape {}", constraint.getClass());
 			constraint.setShape(this);
 			this.constraints.add(constraint);
 		}

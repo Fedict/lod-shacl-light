@@ -26,16 +26,25 @@
 package be.fedict.lod.shacl;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.parser.ShaclParser;
 import be.fedict.lod.shacl.parser.ShaclParserHelper;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.Rio;
 
 /**
  * SHACL light validation engine.
@@ -44,7 +53,7 @@ import org.eclipse.rdf4j.model.Resource;
  */
 public class ShaclValidator {
 	private final Set<ShaclNodeShape> shapes; 
-	private final List<ShaclViolation> violations;
+	private List<ShaclViolation> violations;
 	
 	/**
 	 * Get the list of violations (empty list when there are no violations)
@@ -54,14 +63,28 @@ public class ShaclValidator {
 	public List<ShaclViolation> getViolations() {
 		return this.violations;
 	}
+
+	/**
+	 * Validate an RDF file.
+	 * 
+	 * @param is inputstream
+	 * @param fmt format
+	 * @return false in case of violations
+	 */
+	public boolean validate(InputStream is, RDFFormat fmt) throws IOException {
+		Model m = Rio.parse(is, "http://localhost", fmt);
+		return validate(m);
+	}
 	
 	/**
-	 * Validate an RDF triple model against all rules.
+	 * Validate an RDF triple model.
 	 * 
 	 * @param m triples
 	 * @return false in case of violations
 	 */
 	public boolean validate(Model m) {
+		this.violations = new ArrayList<>();
+				
 		for (ShaclNodeShape n: shapes) {
 			Set<Resource> targets = ShaclParserHelper.getTargets(m, n);
 			
@@ -77,7 +100,19 @@ public class ShaclValidator {
 		}
 		return getViolations().isEmpty();
 	}
-	
+
+	/**
+	 * Constructor
+	 * 
+	 * @param is inputstream
+	 * @param fmt format
+	 * @throws IOException 
+	 */
+	public ShaclValidator(InputStream is, RDFFormat fmt) throws IOException {
+		Model m = Rio.parse(is, "http://localhost", fmt);
+		this.shapes = ShaclParser.parse(m);
+	}
+
 	/**
 	 * Constructor
 	 * 
@@ -85,6 +120,5 @@ public class ShaclValidator {
 	 */
 	public ShaclValidator(Set<ShaclNodeShape> shapes) {
 		this.shapes = shapes;
-		this.violations = new ArrayList<>();
 	}
 }

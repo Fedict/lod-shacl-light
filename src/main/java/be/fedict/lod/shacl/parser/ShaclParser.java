@@ -167,8 +167,8 @@ public class ShaclParser {
 				int order = ShaclParserHelper.asInt(constraints, SHACL.ORDER, -1);
 				propShape.setOrder(order);
 				
-				ShaclConstraintPropertyDatatype datatype = parseType(constraints);
-				propShape.setDatatype(datatype.getDataType());
+			/*	ShaclConstraintPropertyDatatype datatype = parseType(constraints);
+				propShape.setDatatype(datatype.getDataType()); */
 				
 				propShape.addConstraint(parseCount(constraints));
 				propShape.addConstraint(parseType(constraints));

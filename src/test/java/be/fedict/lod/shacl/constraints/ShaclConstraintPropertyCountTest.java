@@ -26,9 +26,11 @@
 package be.fedict.lod.shacl.constraints;
 
 import java.io.IOException;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+	
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -36,10 +38,17 @@ import org.junit.jupiter.api.Test;
  */
 public class ShaclConstraintPropertyCountTest extends ShaclConstraintTest {
 	@Test
-	public void minCountTest() {
-		try {
-			assertTrue(validate("count-ok.ttl"));
-		} catch (IOException ex) {
-		}
+	public void minCountTestOk() throws IOException {
+		assertTrue(validate("count-ok.ttl"));
+	}
+	
+	@Test
+	public void minCountTestTooFew() throws IOException {
+		assertFalse(validate("count-toofew.ttl"));
+	}
+
+	@Test
+	public void minCountTestTooMuch() throws IOException {
+		assertFalse(validate("count-toomuch.ttl"));
 	}
 }

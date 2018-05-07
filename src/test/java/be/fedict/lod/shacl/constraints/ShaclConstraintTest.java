@@ -26,28 +26,34 @@
 package be.fedict.lod.shacl.constraints;
 
 import be.fedict.lod.shacl.ShaclValidator;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rdf4j.rio.RDFFormat;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.BeforeClass;
+
 
 /**
  *
  * @author Bart Hanssens
  */
 public abstract class ShaclConstraintTest {
-	public ShaclValidator validator;
+	public static ShaclValidator validator;
 	
-	public boolean validate(String f) throws IOException {
-		InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(f);
+	private static ClassLoader getClassLoader() {
+		return ShaclConstraintTest.class.getClassLoader();
+	}
+	
+	public static boolean validate(String f) throws IOException {
+		InputStream is = getClassLoader().getResourceAsStream(f);
 		return validator.validate(is, RDFFormat.TURTLE);
 	}
 	
-	@BeforeAll
-	public void init() throws IOException {
-		InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("shacl.ttl");
+	@BeforeClass
+	public static void init() throws IOException {
+		InputStream is = getClassLoader().getResourceAsStream("shacl.ttl");
 		validator = new ShaclValidator(is, RDFFormat.TURTLE);
 	}
 }

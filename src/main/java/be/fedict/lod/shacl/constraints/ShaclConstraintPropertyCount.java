@@ -28,11 +28,12 @@ package be.fedict.lod.shacl.constraints;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 
+
 /**
  *
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
-public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
+public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {	
 	private final int min;
 	private final int max;
 	
@@ -42,11 +43,19 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 							this.getClass().getSimpleName(), getPath(), min, max);
 	}
 	
+	public int getMin() {
+		return this.min;
+	}
+	
+	public int getMax() {
+		return this.max;
+	}
+	
 	@Override
 	public boolean validate(Model m) {
 		for (Resource subj: m.subjects()) {
-			int cnt = m.filter(subj, getPath(), null).size();
-			if (cnt < min || cnt > max) {
+			int cnt = m.filter(subj, getPath(), null).size();			
+			if (cnt < min || cnt > max) {			
 				addViolation(getShape(), subj, getPath());
 			}
 		}

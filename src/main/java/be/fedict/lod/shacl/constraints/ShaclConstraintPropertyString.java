@@ -44,6 +44,12 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 	private final Pattern pattern;
 
 	@Override
+	public String toString() {
+		return String.format("%s [path=%s, min=%d, max=%d, pattern=%s]",
+			this.getClass().getSimpleName(), getPath(), min, max, (pattern != null) ? pattern : "<none>");
+	}
+
+	@Override
 	public boolean validate(Model m) {
 		for (Statement s: m) {
 			Value v = s.getObject();

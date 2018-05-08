@@ -42,8 +42,18 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
  */
 public class ShaclViolation {
 	private final ShaclShape shape;
-	private final Statement statement;
+	private final Resource subj;
+	private final IRI pred;
+	private final Value obj;
+	
 	private final ValueFactory F = SimpleValueFactory.getInstance();
+	
+
+	@Override
+	public String toString() {
+		return String.format("[%s %s %s]", 
+			(subj != null) ? subj : "", (pred != null) ? pred : "", (obj != null) ? obj : "");
+	}
 	
 	/**
 	 * Get statement that generated a violation.
@@ -51,7 +61,7 @@ public class ShaclViolation {
 	 * @return triple statement 
 	 */
 	public Statement getStatement() {
-		return this.statement;
+		return F.createStatement(subj, pred, obj);
 	}
 	
 	/**
@@ -67,11 +77,10 @@ public class ShaclViolation {
 	 * Constructor
 	 * 
 	 * @param shape shape
-	 * @param statement RDF triple
+	 * @param stmt RDF triple
 	 */
-	public ShaclViolation(ShaclShape shape, Statement statement) {
-		this.shape = shape;
-		this.statement = statement;
+	public ShaclViolation(ShaclShape shape, Statement stmt) {
+		this(shape, stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
 	}
 	
 	/**
@@ -84,6 +93,8 @@ public class ShaclViolation {
 	 */
 	public ShaclViolation(ShaclShape shape, Resource s, IRI p, Value o) {
 		this.shape = shape;
-		this.statement = F.createStatement(s, p, o);
+		this.subj = s;
+		this.pred = p;
+		this.obj = o;
 	}
 }

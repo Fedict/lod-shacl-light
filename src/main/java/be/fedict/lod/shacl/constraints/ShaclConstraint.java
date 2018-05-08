@@ -37,12 +37,17 @@ import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Abstract SHACL constraint.
  * 
  * @author Bart Hanssens
  */
 public abstract class ShaclConstraint {
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclConstraint.class);
+	
 	private ShaclPropertyShape shape;
 	private final List<ShaclViolation> violations = new ArrayList<>();
 	
@@ -78,6 +83,7 @@ public abstract class ShaclConstraint {
 	 * @param violation 
 	 */
 	protected void addViolation(ShaclViolation violation) {
+		LOG.warn("Violation {}", violation);
 		violations.add(violation);
 	}	
 	

@@ -26,6 +26,7 @@
 package be.fedict.lod.shacl;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyCount;
 import be.fedict.lod.shacl.parser.ShaclParser;
 import be.fedict.lod.shacl.parser.ShaclParserHelper;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
@@ -33,17 +34,19 @@ import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * SHACL light validation engine.
@@ -51,8 +54,6 @@ import org.slf4j.LoggerFactory;
  * @author Bart.Hanssens
  */
 public class ShaclValidator {
-	private final static Logger LOG = LoggerFactory.getLogger(ShaclValidator.class);
-	
 	private final Set<ShaclNodeShape> shapes; 
 	private final List<ShaclViolation> violations = new ArrayList<>();
 	
@@ -78,6 +79,24 @@ public class ShaclValidator {
 		return validate(m);
 	}
 	
+		/**
+	 * Select statements from model 
+	 * 
+	 * @param m model
+	 * @param s subject
+	 * @param p predicate
+	 * @return filtered model
+	 */
+	public static Model select(Model m, Set<Resource> s, IRI p) {
+		Model m2 = new LinkedHashModel();
+		for (Statement st: m) {
+			if (s.contains(st.getSubject()) && (p == null || st.getPredicate().equals(p))) {
+				m2.add(st);
+			}
+		}
+		return m2;
+	}
+	
 	/**
 	 * Validate an RDF triple model.
 	 * 
@@ -89,26 +108,24 @@ public class ShaclValidator {
 		
 		for (ShaclNodeShape n: shapes) {
 			Set<Resource> targets = ShaclParserHelper.getTargets(m, n);
-			if (targets == null || targets.isEmpty()) {
-				LOG.warn("Skipping validation, no targets for node shape {}", n.getID());
-				continue;
-			}
 			
 			List<ShaclPropertyShape> properties = n.getProperties();
-			if (properties == null || properties.isEmpty()) {
-				LOG.warn("Skipping validation, no property shapes for node shape {}", n.getID());
-				continue;
-			}
 			
 			for (ShaclPropertyShape p: properties) {
 				List<ShaclConstraint> constraints = p.getConstraints();
-				if (constraints == null || constraints.isEmpty()) {
-					LOG.warn("Skipping validation, no constraints for property shape {}", p.getID());
-					continue;
-				}
 				
-				for (ShaclConstraint c:  constraints) {
-					Model m2 = ModelTools.select(m, targets, p.getPath());
+				for (ShaclConstraint c: constraints) {
+					IRI path = p.getPath();
+					
+					// Exception: min property count might need more triples,
+					// otherwise it is not possible to check for missing properties
+					if (c instanceof ShaclConstraintPropertyCount) {
+						if (((ShaclConstraintPropertyCount) c).getMin() > 0) {
+							path = null;
+						}
+					}
+					
+					Model m2 = select(m, targets, path);
 					if (! c.validate(m2)) {
 						violations.addAll(c.getViolations());
 						c.getViolations().clear();

@@ -1,5 +1,5 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix ex: <http://example.com/ns#> .
 
-ex:Video1 a ex:VideoClass ;
-    dcterms:title "Title 1" .
+ex:Cd1 a ex:CdClass ;
+    dcterms:title "Title"@en .

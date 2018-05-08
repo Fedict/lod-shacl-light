@@ -25,7 +25,6 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import be.fedict.lod.shacl.shapes.ShaclShape;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.Literal;
@@ -43,6 +42,16 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 	private final Set<String> langs;
 	private final boolean unique;
 
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		if (langs != null && !langs.isEmpty()) {
+			langs.stream().forEach(l -> b.append(l));
+		}
+		return String.format("%s [path=%s, langs=%s]",
+							this.getClass().getSimpleName(), getPath(), b);
+	}
+	
 	@Override
 	public boolean validate(Model m) {
 		for (Statement s: m) {

@@ -33,3 +33,10 @@ ex:CartoonShape
         sh:datatype xsd:date ;
     ] .
 
+ex:CdNodeShape
+    a sh:NodeShape ;
+    sh:targetClass ex:CdClass ;
+    sh:property [
+        sh:path dcterms:title ; 
+        sh:languageIn ("nl" "fr") ;
+    ] .

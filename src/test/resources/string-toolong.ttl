@@ -2,4 +2,4 @@
 @prefix ex: <http://example.com/ns#> .
 
 ex:Video1 a ex:VideoClass ;
-    dcterms:title "Title 1" .
+    dcterms:title "This is a very long title indeed, way too long actually" .

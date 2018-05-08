@@ -42,7 +42,7 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 	
 	@Override
 	public String toString() {
-		return String.format("%s [type=%s]",
+		return String.format("%s [path=%s, type=%s]",
 							this.getClass().getSimpleName(), getPath(), datatype);
 	}
 	

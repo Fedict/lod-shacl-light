@@ -108,7 +108,7 @@ public class ShaclParser {
 		String str = ShaclParserHelper.asString(m, SHACL.PATTERN);
 		Pattern pattern = (str == null) ? null : Pattern.compile(str);
 		
-		return (min == 0 && max == Integer.MAX_VALUE) ? null
+		return (min == 0 && max == Integer.MAX_VALUE && pattern == null) ? null
 				: new ShaclConstraintPropertyString(min, max, pattern);
 	}
 
@@ -124,8 +124,8 @@ public class ShaclParser {
 												SHACL.LANGUAGE_IN).orElse(null);
 		Set<String> langs = ShaclParserHelper.collectionAsStrings(m2, head);
 		boolean unique = ShaclParserHelper.asBool(m, SHACL.UNIQUE_LANG);
-	
-		return (unique == false) ? null
+
+		return (unique == false && (langs == null || langs.isEmpty())) ? null
 				: new ShaclConstraintPropertyStringLang(langs, unique);
 	}
 	

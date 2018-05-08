@@ -36,7 +36,7 @@ import org.junit.Test;
  *
  * @author Bart Hanssens
  */
-public class ShaclConstraintDatatypeTest extends ShaclConstraintTest {
+public class ShaclConstraintPropertyDatatypeTest extends ShaclConstraintTest {
 	@Test
 	public void datatypeOk() throws IOException {
 		assertTrue("must be valid", validate("datatype-ok.ttl"));

@@ -36,19 +36,19 @@ import org.junit.Test;
  *
  * @author Bart Hanssens
  */
-public class ShaclConstraintStringTest extends ShaclConstraintTest {
+public class ShaclConstraintPropertyStringLangTest extends ShaclConstraintTest {
 	@Test
-	public void stringOk() throws IOException {
-		assertTrue("must be valid", validate("string-ok.ttl"));
+	public void langOk() throws IOException {
+		assertTrue("must be valid", validate("lang-ok.ttl"));
 	}
 	
 	@Test
-	public void stringTooShort() throws IOException {
-		assertFalse("not reporting too short", validate("string-tooshort.ttl"));
+	public void langWrong1() throws IOException {
+		assertFalse("not reporting wrong lang", validate("lang-wrong1.ttl"));
 	}
 	
 	@Test
-	public void stringTooLong() throws IOException {
-		assertFalse("not reporting too long", validate("string-toolong.ttl"));
+	public void langWrong2() throws IOException {
+		assertFalse("not reporting wrong long", validate("lang-wrong2.ttl"));
 	}
 }

@@ -83,7 +83,6 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 		if (datatype.equals(XMLSchema.ANYURI)) {
 			return XMLDatatypeUtil.isValidAnyURI(s);
 		}
-	
 		return true;
 	}
 	

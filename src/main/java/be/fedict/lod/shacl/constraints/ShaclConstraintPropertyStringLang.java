@@ -26,11 +26,13 @@
 package be.fedict.lod.shacl.constraints;
 
 import java.util.Set;
+import org.eclipse.rdf4j.model.IRI;
 
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 /**
@@ -44,12 +46,8 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 
 	@Override
 	public String toString() {
-		StringBuilder b = new StringBuilder();
-		if (langs != null && !langs.isEmpty()) {
-			langs.stream().forEach(l -> b.append(l));
-		}
 		return String.format("%s [path=%s, langs=%s]",
-							this.getClass().getSimpleName(), getPath(), b);
+							this.getClass().getSimpleName(), getPath(), langs);
 	}
 	
 	@Override
@@ -62,14 +60,15 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 			}
 			
 			Literal l = (Literal) v;
-			if (! l.getDatatype().equals(XMLSchema.STRING)) {
+			IRI datatype = l.getDatatype();
+			if (!datatype.equals(XMLSchema.STRING) && !datatype.equals(RDF.LANGSTRING)) {
 				addViolation(getShape(), s);
 				continue;
 			}
 			if (! langs.contains(l.getLanguage().orElse(""))) {
 				addViolation(getShape(), s);
 			}
-		}	
+		}
 		return getViolations().isEmpty();
 	}
 	

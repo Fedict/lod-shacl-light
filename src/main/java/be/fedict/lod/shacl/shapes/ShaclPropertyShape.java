@@ -55,7 +55,7 @@ public class ShaclPropertyShape extends ShaclShape {
 	public void addConstraint(ShaclConstraint constraint) {
 		if (constraint != null) {
 			constraint.setShape(this);
-			this.constraints.add(constraint);
+			constraints.add(constraint);
 			LOG.info("Added constraint {}", constraint);
 		}
 	}

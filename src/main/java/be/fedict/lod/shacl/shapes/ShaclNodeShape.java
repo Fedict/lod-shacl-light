@@ -50,7 +50,7 @@ public class ShaclNodeShape extends ShaclShape {
 	}
 	
 	public void addProperty(ShaclPropertyShape shape) {
-		this.properties.add(shape);
+		properties.add(shape);
 	}
 
 	public List<ShaclPropertyShape> getProperties() {

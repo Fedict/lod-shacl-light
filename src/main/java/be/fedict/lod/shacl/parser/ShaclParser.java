@@ -154,7 +154,7 @@ public class ShaclParser {
 			
 			// Property shapes			
 			Model props = m.filter(subj, SHACL.PROPERTY, null);
-			
+
 			for(Value prop: props.objects()) {
 				LOG.info("Parsing property shape {}", prop);
 				Resource propId = (Resource) prop;
@@ -181,16 +181,16 @@ public class ShaclParser {
 				propShape.setDatatype(datatype.getDataType()); */
 				
 				propShape.addConstraint(parseCount(constraints));
-				propShape.addConstraint(parseType(constraints));
+		/*		propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseString(constraints));
-				propShape.addConstraint(parseStringLang(constraints, m));
+				propShape.addConstraint(parseStringLang(constraints, m)); */
 
 //				rules.add(w.wrap(parseStringLang(constraints)));
 				nodeShape.addProperty(propShape);
 			}
 			shapes.add(nodeShape);
-			
 		}
+		LOG.info("Added {} node shapes", shapes.size());
 		return shapes;
 	}
 }

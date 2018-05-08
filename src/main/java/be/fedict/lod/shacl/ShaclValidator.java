@@ -33,12 +33,8 @@ import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.Model;
@@ -78,6 +74,7 @@ public class ShaclValidator {
 	 */
 	public boolean validate(InputStream is, RDFFormat fmt) throws IOException {
 		Model m = Rio.parse(is, "http://localhost", fmt);
+		if (m == null) { throw new IOException(); }
 		return validate(m);
 	}
 	
@@ -131,6 +128,7 @@ public class ShaclValidator {
 	 */
 	public ShaclValidator(InputStream is, RDFFormat fmt) throws IOException {
 		Model m = Rio.parse(is, "http://localhost", fmt);
+				if (m == null) { throw new IOException(); }
 		this.shapes = ShaclParser.parse(m);
 	}
 

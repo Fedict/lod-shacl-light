@@ -40,11 +40,16 @@ import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author Bart Hanssens
  */
 public class ShaclParserHelper {
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclParserHelper.class);
+		
 	/**
 	 * Filter model for a specific property
 	 * 
@@ -179,7 +184,7 @@ public class ShaclParserHelper {
 	public static Set<Resource> getTargets(Model m, ShaclNodeShape shape) {
 		Set<IRI> classes  = shape.getTargetClasses();
 		
-		if (classes == null) {
+		if (classes == null || classes.isEmpty()) {
 			return m.subjects();
 		}
 		Set<Resource> iris = new HashSet<>();

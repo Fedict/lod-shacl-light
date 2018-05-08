@@ -46,7 +46,6 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 	public boolean validate(Model m) {
 		for (Resource subj: m.subjects()) {
 			int cnt = m.filter(subj, getPath(), null).size();
-			System.err.println(cnt);
 			if (cnt < min || cnt > max) {
 				addViolation(getShape(), subj, getPath());
 			}

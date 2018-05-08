@@ -29,16 +29,10 @@ import org.eclipse.rdf4j.model.IRI;
 
 /**
  *
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
 public abstract class ShaclConstraintProperty extends ShaclConstraint {
-	private IRI path;
-	
 	public IRI getPath() {
-		return this.path;
-	}
-	
-	public void setPath(IRI path) {
-		this.path = path;
+		return getShape().getPath();
 	}
 }

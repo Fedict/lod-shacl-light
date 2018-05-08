@@ -26,6 +26,7 @@
 package be.fedict.lod.shacl.constraints;
 
 import be.fedict.lod.shacl.ShaclViolation;
+import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 import be.fedict.lod.shacl.shapes.ShaclShape;
 
 import java.util.ArrayList;
@@ -42,13 +43,8 @@ import org.eclipse.rdf4j.model.Statement;
  * @author Bart Hanssens
  */
 public abstract class ShaclConstraint {
-	private ShaclShape shape = null;
+	private ShaclPropertyShape shape;
 	private final List<ShaclViolation> violations = new ArrayList<>();
-	
-	@Override
-	public String toString() {
-		return "Shacl Constraint " + this.getClass().getSimpleName();
-	}
 	
 	/**
 	 * Validate rule
@@ -68,11 +64,11 @@ public abstract class ShaclConstraint {
 	}
 
 	
-	public ShaclShape getShape() {
+	public ShaclPropertyShape getShape() {
 		return this.shape;
 	}
 	
-	public void setShape(ShaclShape shape) {
+	public void setShape(ShaclPropertyShape shape) {
 		this.shape = shape;
 	}
 	

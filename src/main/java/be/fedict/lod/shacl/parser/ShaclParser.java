@@ -156,9 +156,9 @@ public class ShaclParser {
 			Model props = m.filter(subj, SHACL.PROPERTY, null);
 			
 			for(Value prop: props.objects()) {
+				LOG.info("Parsing property shape {}", prop);
 				Resource propId = (Resource) prop;
-				ShaclPropertyShape propShape = new ShaclPropertyShape(propId);
-				
+
 				// Constraints
 				Model constraints = m.filter(propId, null, null);
 				
@@ -173,6 +173,8 @@ public class ShaclParser {
 					LOG.info("Skipping, path not set for {}", propId);
 					continue;
 				}
+				
+				ShaclPropertyShape propShape = new ShaclPropertyShape(propId);
 				propShape.setPath(path);
 
 			/*	ShaclConstraintPropertyDatatype datatype = parseType(constraints);

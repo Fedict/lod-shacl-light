@@ -25,11 +25,14 @@
  */
 package be.fedict.lod.shacl.shapes;
 
+import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  *
@@ -38,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ShaclPropertyShape extends ShaclShape {
 	private final static Logger LOG = LoggerFactory.getLogger(ShaclPropertyShape.class);
 	
+	private final List<ShaclConstraint> constraints = new ArrayList<>();
 	private IRI path;
 	
 	public IRI getPath() {
@@ -46,6 +50,18 @@ public class ShaclPropertyShape extends ShaclShape {
 	
 	public void setPath(IRI path) {
 		this.path = path;
+	}
+	
+	public void addConstraint(ShaclConstraint constraint) {
+		if (constraint != null) {
+			constraint.setShape(this);
+			this.constraints.add(constraint);
+			LOG.info("Added constraint {}", constraint);
+		}
+	}
+	
+	public List<ShaclConstraint> getConstraints() {
+		return this.constraints;
 	}
 	
 	public ShaclPropertyShape(Resource id) {

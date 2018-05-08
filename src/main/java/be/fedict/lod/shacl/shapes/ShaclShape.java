@@ -34,19 +34,14 @@ import java.util.Map;
 
 import org.eclipse.rdf4j.model.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  *
  * @author Bart.Hanssens
  */
 public abstract class ShaclShape {
-	private final static Logger LOG = LoggerFactory.getLogger(ShaclShape.class);
-	
 	private final Resource id;
 	private final Map<String,String> messages = new HashMap<>();
-	private final List<ShaclConstraint> constraints = new ArrayList<>();
+
 
 	public Map<String,String> getMessages() {
 		return this.messages;
@@ -63,17 +58,6 @@ public abstract class ShaclShape {
 		messages.put(lang, message);
 	}
 	
-	public void addConstraint(ShaclConstraint constraint) {
-		if (constraint != null) {
-			LOG.info("Adding constraint {}", constraint);
-			constraint.setShape(this);
-			this.constraints.add(constraint);
-		}
-	}
-	
-	public List<ShaclConstraint> getConstraints() {
-		return this.constraints;
-	}
 	
 	public Resource getID() {
 		return this.id;

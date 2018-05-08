@@ -46,12 +46,17 @@ import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * SHACL light validation engine.
  * 
  * @author Bart.Hanssens
  */
 public class ShaclValidator {
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclValidator.class);
+	
 	private final Set<ShaclNodeShape> shapes; 
 	private final List<ShaclViolation> violations = new ArrayList<>();
 	
@@ -85,13 +90,27 @@ public class ShaclValidator {
 	public boolean validate(Model m) {
 		violations.clear();
 		
-		
 		for (ShaclNodeShape n: shapes) {
 			Set<Resource> targets = ShaclParserHelper.getTargets(m, n);
+			if (targets == null || targets.isEmpty()) {
+				LOG.warn("Skipping validation, no targets for node shape {}", n.getID());
+				continue;
+			}
 			
-			for (ShaclPropertyShape p: n.getProperties()) {
+			List<ShaclPropertyShape> properties = n.getProperties();
+			if (properties == null || properties.isEmpty()) {
+				LOG.warn("Skipping validation, no property shapes for node shape {}", n.getID());
+				continue;
+			}
+			
+			for (ShaclPropertyShape p: properties) {
+				List<ShaclConstraint> constraints = p.getConstraints();
+				if (constraints == null || constraints.isEmpty()) {
+					LOG.warn("Skipping validation, no constraints for property shape {}", p.getID());
+					continue;
+				}
 				
-				for (ShaclConstraint c:  p.getConstraints()) {
+				for (ShaclConstraint c:  constraints) {
 					Model m2 = ModelTools.select(m, targets, p.getPath());
 					if (! c.validate(m2)) {
 						violations.addAll(c.getViolations());

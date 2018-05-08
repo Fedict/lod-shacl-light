@@ -28,46 +28,24 @@ package be.fedict.lod.shacl.shapes;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
 public class ShaclPropertyShape extends ShaclShape {
-	private int order = -1;
-	private IRI group;
+	private final static Logger LOG = LoggerFactory.getLogger(ShaclPropertyShape.class);
+	
 	private IRI path;
-	private IRI datatype;
 	
-	public int getOrder() {
-		return this.order;
-	}
-		
-	public void setOrder(int order) {
-		this.order = order;
-	}
-	
-	public IRI getGroup() {
-		return this.group;
-	}
-		
-	public void setGroup(IRI group) {
-		this.group = group;
-	}
-
 	public IRI getPath() {
 		return this.path;
 	}
 	
 	public void setPath(IRI path) {
 		this.path = path;
-	}
-	
-	public IRI getDatatype() {
-		return this.datatype;
-	}
-	
-	public void setDatatype(IRI datatype) {
-		this.datatype = datatype;
 	}
 	
 	public ShaclPropertyShape(Resource id) {

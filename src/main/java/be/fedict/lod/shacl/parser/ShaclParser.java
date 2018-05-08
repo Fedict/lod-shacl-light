@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
@@ -142,9 +144,14 @@ public class ShaclParser {
 		Model ids = m.filter(null, RDF.TYPE, SHACL.NODE_SHAPE);
 
 		for(Statement id: ids) {
+			LOG.info("Parsing node shape {}", id);
 			Resource subj = id.getSubject();
 			ShaclNodeShape nodeShape = new ShaclNodeShape((IRI) subj);
 
+			Model targets = m.filter(subj, SHACL.TARGET_CLASS, null);
+			Set<IRI> t = targets.objects().stream().map(v -> (IRI) v).collect(Collectors.toSet());
+			nodeShape.setTargetClasses(t);
+			
 			// Property shapes			
 			Model props = m.filter(subj, SHACL.PROPERTY, null);
 			
@@ -156,17 +163,18 @@ public class ShaclParser {
 				Model constraints = m.filter(propId, null, null);
 				
 				boolean disabled = ShaclParserHelper.asBool(constraints, SHACL.DEACTIVATED);
-				if(disabled) {
-					LOG.info("Skipping deactivated shape {}", propId);
+				if (disabled) {
+					LOG.info("Skipping, deactivated shape {}", propId);
 					continue;
 				}
 				
 				IRI path = ShaclParserHelper.asIRI(constraints, SHACL.PATH);
+				if (path == null) {
+					LOG.info("Skipping, path not set for {}", propId);
+					continue;
+				}
 				propShape.setPath(path);
-				
-				int order = ShaclParserHelper.asInt(constraints, SHACL.ORDER, -1);
-				propShape.setOrder(order);
-				
+
 			/*	ShaclConstraintPropertyDatatype datatype = parseType(constraints);
 				propShape.setDatatype(datatype.getDataType()); */
 				

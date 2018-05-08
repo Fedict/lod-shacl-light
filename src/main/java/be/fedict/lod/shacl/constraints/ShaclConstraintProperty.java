@@ -34,16 +34,6 @@ import org.eclipse.rdf4j.model.IRI;
 public abstract class ShaclConstraintProperty extends ShaclConstraint {
 	private IRI path;
 	
-	private IRI group = null;
-	private int order = -1;
-
-	public int getOrder() {
-		return this.order;
-	}
-	public void setOrder(int order) {
-		this.order = order;
-	}
-	
 	public IRI getPath() {
 		return this.path;
 	}

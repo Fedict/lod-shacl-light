@@ -39,7 +39,7 @@ import org.eclipse.rdf4j.model.Statement;
 /**
  * Abstract SHACL constraint.
  * 
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
 public abstract class ShaclConstraint {
 	private ShaclShape shape = null;

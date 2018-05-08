@@ -26,7 +26,10 @@
 package be.fedict.lod.shacl.shapes;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.eclipse.rdf4j.model.IRI;
 
 import org.eclipse.rdf4j.model.Resource;
 
@@ -36,8 +39,16 @@ import org.eclipse.rdf4j.model.Resource;
  */
 public class ShaclNodeShape extends ShaclShape {
 	private final List<ShaclPropertyShape> properties = new ArrayList<>();
+	private Set<IRI> targetClasses = new HashSet<>();
 	
-
+	public Set<IRI> getTargetClasses() {
+		return this.targetClasses;
+	}
+	
+	public void setTargetClasses(Set<IRI> targets) {
+		this.targetClasses = targets;
+	}
+	
 	public void addProperty(ShaclPropertyShape shape) {
 		this.properties.add(shape);
 	}

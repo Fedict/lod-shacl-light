@@ -39,16 +39,16 @@ import org.junit.Test;
 public class ShaclConstraintPropertyCountTest extends ShaclConstraintTest {
 	@Test
 	public void minCountTestOk() throws IOException {
-		assertTrue(validate("count-ok.ttl"));
+		assertTrue("must be valid", validate("count-ok.ttl"));
 	}
 	
 	@Test
 	public void minCountTestTooFew() throws IOException {
-		assertFalse(validate("count-toofew.ttl"));
+		assertFalse("not reporting too few", validate("count-toofew.ttl"));
 	}
 
 	@Test
 	public void minCountTestTooMuch() throws IOException {
-		assertFalse(validate("count-toomuch.ttl"));
+		assertFalse("not reporting too many", validate("count-toomuch.ttl"));
 	}
 }

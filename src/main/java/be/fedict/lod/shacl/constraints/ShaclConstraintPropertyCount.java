@@ -25,6 +25,7 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.text.MessageFormat;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 
@@ -37,9 +38,16 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 	private final int max;
 	
 	@Override
+	public String toString() {
+		return String.format("Constraint %s [path=%s, min=%d, max=%d]",
+							this.getClass().getSimpleName(), getPath(), min, max);
+	}
+	
+	@Override
 	public boolean validate(Model m) {
 		for (Resource subj: m.subjects()) {
 			int cnt = m.filter(subj, getPath(), null).size();
+			System.err.println(cnt);
 			if (cnt < min || cnt > max) {
 				addViolation(getShape(), subj, getPath());
 			}

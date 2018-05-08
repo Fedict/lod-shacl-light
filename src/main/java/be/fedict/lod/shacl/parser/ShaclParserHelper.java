@@ -25,9 +25,7 @@
  */
 package be.fedict.lod.shacl.parser;
 
-import be.fedict.lod.shacl.shapes.ShaclShape;
 import java.util.ArrayList;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,9 +38,11 @@ import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.util.RDFCollections;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 
+import be.fedict.lod.shacl.shapes.ShaclNodeShape;
+
 /**
  * 
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
 public class ShaclParserHelper {
 	/**
@@ -176,16 +176,14 @@ public class ShaclParserHelper {
 	 * @param shape shape
 	 * @return set of subjects 
 	 */
-	public static Set<Resource> getTargets(Model m, ShaclShape shape) {
-		Set<Resource> nodes = shape.getTargetNodes();
+	public static Set<Resource> getTargets(Model m, ShaclNodeShape shape) {
 		Set<IRI> classes  = shape.getTargetClasses();
 		
-		if (nodes == null || classes == null) {
+		if (classes == null) {
 			return m.subjects();
 		}
 		Set<Resource> iris = new HashSet<>();
 		
-		iris.addAll(getFilteredNodes(m, nodes));
 		iris.addAll(getFilteredClasses(m, classes));
 		
 		return iris;

@@ -53,7 +53,7 @@ import org.eclipse.rdf4j.rio.Rio;
  */
 public class ShaclValidator {
 	private final Set<ShaclNodeShape> shapes; 
-	private List<ShaclViolation> violations;
+	private final List<ShaclViolation> violations = new ArrayList<>();
 	
 	/**
 	 * Get the list of violations (empty list when there are no violations)
@@ -83,8 +83,9 @@ public class ShaclValidator {
 	 * @return false in case of violations
 	 */
 	public boolean validate(Model m) {
-		this.violations = new ArrayList<>();
-				
+		violations.clear();
+		
+		
 		for (ShaclNodeShape n: shapes) {
 			Set<Resource> targets = ShaclParserHelper.getTargets(m, n);
 			
@@ -94,6 +95,7 @@ public class ShaclValidator {
 					Model m2 = ModelTools.select(m, targets, p.getPath());
 					if (! c.validate(m2)) {
 						violations.addAll(c.getViolations());
+						c.getViolations().clear();
 					}
 				}
 			}

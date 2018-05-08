@@ -25,7 +25,6 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import be.fedict.lod.shacl.shapes.ShaclShape;
 import java.util.regex.Pattern;
 
 import org.eclipse.rdf4j.model.Literal;

@@ -29,12 +29,9 @@ import be.fedict.lod.shacl.constraints.ShaclConstraint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 
 import org.slf4j.Logger;
@@ -48,50 +45,9 @@ public abstract class ShaclShape {
 	private final static Logger LOG = LoggerFactory.getLogger(ShaclShape.class);
 	
 	private final Resource id;
-	
-	private final Set<IRI> targetClasses = new HashSet<>();
-	private final Set<Resource> targetNodes = new HashSet<>();
-	private final Set<IRI> targetSubjectsOfs = new HashSet<>();
-	private final Set<IRI> targetObjectsOfs = new HashSet<>();
-
-	private final Map<String,String> labels = new HashMap<>();
 	private final Map<String,String> messages = new HashMap<>();
-	
 	private final List<ShaclConstraint> constraints = new ArrayList<>();
 
-	
-	public Set<Resource> getTargetNodes() {
-		return this.targetNodes;
-	}
-	
-	public Set<IRI> getTargetClasses() {
-		return this.targetClasses;
-	}
-	
-	public Set<IRI> getTargetSubjectsOfs() {
-		return this.targetSubjectsOfs;
-	}
-	
-	public Set<IRI> getTargetObjectsOfs() {
-		return this.targetObjectsOfs;
-	}
-	
-	
-	public Map<String,String> getLabels() {
-		return this.labels;
-	}
-	
-	public String getLabel(String lang) {
-		return labels.get(lang);
-	}
-	
-	public void setLabel(String lang, String label) {
-		if (label == null) {
-			labels.remove(lang);
-		}
-		labels.put(lang, label);
-	}
-	
 	public Map<String,String> getMessages() {
 		return this.messages;
 	}
@@ -109,7 +65,7 @@ public abstract class ShaclShape {
 	
 	public void addConstraint(ShaclConstraint constraint) {
 		if (constraint != null) {
-			LOG.info("Adding shape {}", constraint.getClass());
+			LOG.info("Adding constraint {}", constraint);
 			constraint.setShape(this);
 			this.constraints.add(constraint);
 		}

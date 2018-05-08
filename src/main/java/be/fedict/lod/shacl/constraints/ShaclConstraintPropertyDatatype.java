@@ -40,8 +40,14 @@ import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 	private final IRI datatype;
 	
+	@Override
+	public String toString() {
+		return String.format("%s [type=%s]",
+							this.getClass().getSimpleName(), getPath(), datatype);
+	}
+	
 	public IRI getDataType() {
-		return datatype;
+		return this.datatype;
 	}
 	
 	private boolean validateDataType(Value v, IRI datatype) {
@@ -52,7 +58,13 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 			return false;
 		}
 		
+		IRI t = ((Literal) v).getDatatype();
+		if (! datatype.equals(t)) {
+			return false;
+		}
+		
 		String s = v.stringValue();
+
 		if (datatype.equals(XMLSchema.BOOLEAN)) {
 			return XMLDatatypeUtil.isValidBoolean(s);
 		}
@@ -68,6 +80,10 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 		if (datatype.equals(XMLSchema.DATETIME)) {
 			return XMLDatatypeUtil.isValidDateTime(s);
 		}
+		if (datatype.equals(XMLSchema.ANYURI)) {
+			return XMLDatatypeUtil.isValidAnyURI(s);
+		}
+	
 		return true;
 	}
 	

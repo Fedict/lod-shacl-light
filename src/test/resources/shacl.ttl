@@ -3,7 +3,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-ex:NodeShape
+ex:BookNodeShape
     a sh:NodeShape ;
     sh:targetClass ex:BookClass ;
     sh:property [
@@ -11,3 +11,25 @@ ex:NodeShape
         sh:minCount 1 ;
         sh:maxCount 2 ;
     ] .
+
+ex:VideoNodeShape
+    a sh:NodeShape ;
+    sh:targetClass ex:VideoClass ;
+    sh:property [
+        sh:path dcterms:title ;
+        sh:minLength 4 ;
+        sh:maxLength 10 ;
+    ] .
+
+ex:CartoonShape
+    a sh:NodeShape ;
+    sh:targetClass ex:CartoonClass ;
+    sh:property [
+        sh:path dcterms:title ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path dcterms:created ;
+        sh:datatype xsd:date ;
+    ] .
+

@@ -124,8 +124,7 @@ public class ShaclParser {
 												SHACL.LANGUAGE_IN).orElse(null);
 		Set<String> langs = ShaclParserHelper.collectionAsStrings(m2, head);
 		boolean unique = ShaclParserHelper.asBool(m, SHACL.UNIQUE_LANG);
-		System.err.println(langs);
-		
+	
 		return (unique == false) ? null
 				: new ShaclConstraintPropertyStringLang(langs, unique);
 	}
@@ -181,11 +180,10 @@ public class ShaclParser {
 				propShape.setDatatype(datatype.getDataType()); */
 				
 				propShape.addConstraint(parseCount(constraints));
-		/*		propShape.addConstraint(parseType(constraints));
+				propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseString(constraints));
-				propShape.addConstraint(parseStringLang(constraints, m)); */
+				propShape.addConstraint(parseStringLang(constraints, m));
 
-//				rules.add(w.wrap(parseStringLang(constraints)));
 				nodeShape.addProperty(propShape);
 			}
 			shapes.add(nodeShape);

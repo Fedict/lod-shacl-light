@@ -1,0 +1,7 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://example.com/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Cartoon1 a ex:CartoonClass ;
+    dcterms:title "T" ;
+    dcterms:created "2001-05-12"^^xsd:date .

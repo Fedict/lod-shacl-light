@@ -152,9 +152,12 @@ public class ShaclParser {
 		Resource head = Models.getPropertyResource(m, Models.subject(m).get(), 
 												SHACL.LANGUAGE_IN).orElse(null);
 		Set<String> langs = ShaclParserHelper.collectionAsStrings(m2, head);
+		if (langs == null) {
+			langs = new HashSet<>();
+		}
 		boolean unique = ShaclParserHelper.asBool(m, SHACL.UNIQUE_LANG);
 
-		return (unique == false && (langs == null || langs.isEmpty())) ? null
+		return (unique == false && langs.isEmpty()) ? null
 				: new ShaclConstraintPropertyStringLang(langs, unique);
 	}
 	

@@ -2,5 +2,4 @@
 @prefix ex: <http://example.com/ns#> .
 
 ex:Cd1 a ex:CdClass ;
-    dcterms:description "Description 1"@en ;
-    dcterms:description "Description 2"@en .
+    dcterms:title "Title"@en .

@@ -40,7 +40,12 @@ ex:CdNodeShape
         sh:path dcterms:title ; 
         sh:languageIn ("nl" "fr") ;
         sh:uniqueLang true ;
+    ] ;
+    sh:property [
+        sh:path dcterms:description ; 
+        sh:uniqueLang true ;
     ] .
+
 
 ex:DvdNodeShape
     a sh:NodeShape ;

@@ -1,6 +1,10 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix ex: <http://example.com/ns#> .
 
-ex:Cd1 a ex:CdClass ;
+ex:Cd2 a ex:CdClass ;
+    dcterms:description "Description 1"@en ;
+    dcterms:description "Description 2"@en .
+
+ex:Cd22 a ex:CdClass ;
     dcterms:description "Description 1"@en ;
     dcterms:description "Description 2"@en .

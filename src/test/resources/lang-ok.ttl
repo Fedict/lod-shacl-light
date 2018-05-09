@@ -5,3 +5,8 @@ ex:Cd1 a ex:CdClass ;
     dcterms:title "Titel"@nl ;
     dcterms:title "Titre"@fr ;
     dcterms:description "Desc"@de .
+
+ex:Cd11 a ex:CdClass ;
+    dcterms:title "Titel 2"@nl ;
+    dcterms:title "Titre 2"@fr ;
+    dcterms:description "Desc 2"@de .

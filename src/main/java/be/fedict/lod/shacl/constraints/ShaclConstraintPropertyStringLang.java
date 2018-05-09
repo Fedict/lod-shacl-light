@@ -33,6 +33,7 @@ import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
@@ -55,27 +56,30 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 	public boolean validate(Model m) {
 		clearViolations();
 		
-		Set<String> uniqs = new HashSet<>();
+		Set<IRI> subjs = Models.subjectIRIs(m);
+		for (IRI subj: subjs) {
+			Set<String> uniqs = new HashSet<>();
 		
-		for (Statement s: m) {
-			Value v = s.getObject();
-			if (! (v instanceof Literal)) {
-				addViolation(this, s);
-				continue;
-			}
+			for (Statement s: m.filter(subj, null, null)) {
+				Value v = s.getObject();
+				if (! (v instanceof Literal)) {
+					addViolation(this, s);
+					continue;
+				}
 			
-			Literal l = (Literal) v;
-			IRI datatype = l.getDatatype();
-			if (!datatype.equals(XMLSchema.STRING) && !datatype.equals(RDF.LANGSTRING)) {
-				addViolation(this, s);
-				continue;
-			}
-			String lang = l.getLanguage().orElse("");
-			if (!langs.isEmpty() && !langs.contains(lang)) {
-				addViolation(this, s);
-			}
-			if (unique == true && !uniqs.add(lang)) {
-				addViolation(this, s.getSubject(), s.getPredicate());
+				Literal l = (Literal) v;
+				IRI datatype = l.getDatatype();
+				if (!datatype.equals(XMLSchema.STRING) && !datatype.equals(RDF.LANGSTRING)) {
+					addViolation(this, s);
+					continue;
+				}
+				String lang = l.getLanguage().orElse("");
+				if (!langs.isEmpty() && !langs.contains(lang)) {
+					addViolation(this, s);
+				}
+				if (unique == true && !uniqs.add(lang)) {
+					addViolation(this, s.getSubject(), s.getPredicate());
+				}
 			}
 		}
 		return !hasViolations();

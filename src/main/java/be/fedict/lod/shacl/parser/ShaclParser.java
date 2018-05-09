@@ -31,6 +31,7 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyDatatype;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyNodekind;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyValue;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 import java.io.File;
 import java.io.IOException;
@@ -107,6 +108,21 @@ public class ShaclParser {
 		
 		return (kind == null) ? null 
 				: new ShaclConstraintPropertyNodekind(kind);
+	}
+	
+	/**
+	 * Parse to ShaclConstraint
+	 * 
+	 * @param m
+	 * @return rule or null
+	 * @throws ShaclParserException 
+	 */
+	private static ShaclConstraintPropertyValue parseValue(Model m) 
+												throws ShaclParserException {
+		Value value = ShaclParserHelper.asIRI(m, SHACL.VALUE);
+		
+		return (value == null) ? null 
+				: new ShaclConstraintPropertyValue(value);
 	}
 	
 	/**
@@ -200,6 +216,7 @@ public class ShaclParser {
 				propShape.addConstraint(parseKind(constraints));
 				propShape.addConstraint(parseString(constraints));
 				propShape.addConstraint(parseStringLang(constraints, m));
+				propShape.addConstraint(parseValue(constraints));
 				
 				nodeShape.addProperty(propShape);
 			}

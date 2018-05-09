@@ -35,7 +35,7 @@ import org.eclipse.rdf4j.model.vocabulary.SHACL;
 
 /**
  *
- * @author Bart.Hanssens
+ * @author Bart Hanssens
  */
 public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 	private final IRI nodekind;
@@ -88,7 +88,7 @@ public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 	@Override
 	public boolean validate(Model m) {
 		clearViolations();
-		System.err.println("Model " + m.size());
+
 		for(Statement s: m) {
 			if (! validateNodeKind(s.getObject(), this.nodekind)) {
 				addViolation(this, s);

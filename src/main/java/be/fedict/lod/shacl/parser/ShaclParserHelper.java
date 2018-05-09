@@ -47,9 +47,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Bart Hanssens
  */
-public class ShaclParserHelper {
-	private final static Logger LOG = LoggerFactory.getLogger(ShaclParserHelper.class);
-		
+public class ShaclParserHelper {		
 	/**
 	 * Filter model for a specific property
 	 * 
@@ -61,6 +59,18 @@ public class ShaclParserHelper {
 		return (m == null || m.isEmpty() || p == null) 
 				? null 
 				: Models.getPropertyIRI(m, Models.subject(m).get(), p).orElse(null);
+	}
+	/**
+	 * Filter model for a specific property
+	 * 
+	 * @param m model
+	 * @param p predicate of the property
+	 * @return object value or null
+	 */
+	public static Value asValue(Model m, IRI p) {
+		return (m == null || m.isEmpty() || p == null) 
+				? null 
+				: Models.getProperty(m, Models.subject(m).get(), p).orElse(null);
 	}
 	
 	/**

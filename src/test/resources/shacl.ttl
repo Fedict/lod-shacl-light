@@ -49,3 +49,11 @@ ex:DvdNodeShape
         sh:path dcterms:related ; 
         sh:nodeKind sh:IRI ;
     ] .
+
+ex:ComicNodeShape
+    a sh:NodeShape ;
+    sh:targetClass ex:ComicClass ;
+    sh:property [
+        sh:path dcterms:related ; 
+        sh:hasValue ex:Dvd1 ;
+    ] .

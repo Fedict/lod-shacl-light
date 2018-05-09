@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Bart Hanssens <bart.hanssens@fedict.be>
+ * Copyright (c) 2018, Bart Hanssens <bart.hanssens@fedict.be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,26 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import java.util.regex.Pattern;
+import java.io.IOException;
 
-import org.eclipse.rdf4j.model.Literal;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
+import static org.junit.Assert.assertFalse;	
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 
 /**
- * Check if object value follows language count and pattern.
- * 
- * @author Bart.Hanssens
+ *
+ * @author Bart Hanssens
  */
-public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
-	private Value value;
-	
-	@Override
-	public String toString() {
-		return String.format("%s [path=%s, value=%s]",
-			this.getClass().getSimpleName(), getPath(), value);
-	}
-
-	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-		
-		for (Statement s: m) {
-			Value v = s.getObject();
-			if (! value.equals(v)) {
-				addViolation(this, s);
-			}
-		}
-		return !hasViolations();
+public class ShaclConstraintPropertyValueTest extends ShaclConstraintTest {
+	@Test
+	public void valueOk() throws IOException {
+		assertTrue("must be valid", validate("value-ok.ttl"));
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param value value
-	 */
-	public ShaclConstraintPropertyValue(Value value) {
-		this.value = value;
+	@Test
+	public void valueWrong() throws IOException {
+		assertFalse("not reporting wrong value", validate("value-wrong.ttl"));
 	}
 }

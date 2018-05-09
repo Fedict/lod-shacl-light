@@ -63,14 +63,15 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 	@Override
 	public boolean validate(Model m) {
 		clearViolations();
-		
+
 		for (Resource subj: m.subjects()) {
-			int cnt = m.filter(subj, getPath(), null).size();			
+			int cnt = m.filter(subj, getPath(), null).size();
 			if (cnt < min || cnt > max) {			
 				addViolation(this, subj, getPath());
 			}
 		}
-		return hasViolations();
+
+		return !hasViolations();
 	}
 	
 	/**

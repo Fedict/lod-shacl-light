@@ -74,7 +74,7 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 				addViolation(this, s);
 			}
 		}
-		return hasViolations();
+		return !hasViolations();
 	}
 	
 	/**

@@ -1,0 +1,6 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex: <http://example.com/ns#> .
+
+ex:Cd2 a ex:CdClass ;
+    dcterms:title "Titel een"@nl ;
+    dcterms:title "Titel twee"@nl .

@@ -26,11 +26,11 @@
 package be.fedict.lod.shacl.constraints;
 
 import java.io.IOException;
-import static org.junit.Assert.assertFalse;
-	
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;	
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  *
@@ -50,5 +50,10 @@ public class ShaclConstraintPropertyStringLangTest extends ShaclConstraintTest {
 	@Test
 	public void langWrong2() throws IOException {
 		assertFalse("not reporting wrong long", validate("lang-wrong2.ttl"));
+	}
+	
+	@Test
+	public void langNotUnique() throws IOException {
+		assertFalse("not reporting not uniqe lang", validate("lang-notunique.ttl"));
 	}
 }

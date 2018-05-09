@@ -25,12 +25,10 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import org.eclipse.rdf4j.model.IRI;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
@@ -80,7 +78,7 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 				addViolation(this, s.getSubject(), s.getPredicate());
 			}
 		}
-		return hasViolations();
+		return !hasViolations();
 	}
 	
 	/**

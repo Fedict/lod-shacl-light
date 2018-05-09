@@ -39,4 +39,5 @@ ex:CdNodeShape
     sh:property [
         sh:path dcterms:title ; 
         sh:languageIn ("nl" "fr") ;
+        sh:uniqueLang true ;
     ] .

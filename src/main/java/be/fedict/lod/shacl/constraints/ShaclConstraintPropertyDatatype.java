@@ -109,7 +109,7 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 				addViolation(this, s);
 			}
 		}
-		return hasViolations();
+		return !hasViolations();
 	}
 	
 	/**

@@ -26,9 +26,6 @@
 package be.fedict.lod.shacl;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
-import be.fedict.lod.shacl.shapes.ShaclShape;
-
-import java.util.Map;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;

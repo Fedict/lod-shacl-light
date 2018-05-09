@@ -25,13 +25,9 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import java.util.regex.Pattern;
-
-import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 /**
  * Check if object value follows language count and pattern.

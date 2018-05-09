@@ -119,7 +119,7 @@ public class ShaclParser {
 	 */
 	private static ShaclConstraintPropertyValue parseValue(Model m) 
 												throws ShaclParserException {
-		Value value = ShaclParserHelper.asIRI(m, SHACL.VALUE);
+		Value value = ShaclParserHelper.asValue(m, SHACL.HAS_VALUE);
 		
 		return (value == null) ? null 
 				: new ShaclConstraintPropertyValue(value);

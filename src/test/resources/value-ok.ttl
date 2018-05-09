@@ -2,4 +2,5 @@
 @prefix ex: <http://example.com/ns#> .
 
 ex:Comic1 a ex:ComicClass ;
-    dcterms:related <http://example.com/ns#Dvd1> .
+    dcterms:related <http://example.com/ns#Dvd1> ;
+    dcterms:related <http://example.com/ns#SomethingElse> .

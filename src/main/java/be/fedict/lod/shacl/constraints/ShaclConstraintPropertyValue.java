@@ -25,9 +25,12 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.Set;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.util.Models;
 
 /**
  * Check if object value follows language count and pattern.
@@ -47,10 +50,20 @@ public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
 	public boolean validate(Model m) {
 		clearViolations();
 		
-		for (Statement s: m) {
-			Value v = s.getObject();
-			if (! value.equals(v)) {
-				addViolation(this, s);
+		Set<IRI> subjs = Models.subjectIRIs(m);
+		
+		for(IRI subj: subjs) {
+			// check if at least one triple has the specified value 
+			boolean hasval = false;
+			for (Statement s: m.filter(subj, null, null)) {
+				Value v = s.getObject();
+				if (value.equals(v)) {
+					hasval = true;
+					break;
+				}
+			}
+			if (hasval == false) {
+				addViolation(this, subj);
 			}
 		}
 		return !hasViolations();

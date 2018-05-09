@@ -27,7 +27,6 @@ package be.fedict.lod.shacl.constraints;
 
 import be.fedict.lod.shacl.ShaclViolation;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
-import be.fedict.lod.shacl.shapes.ShaclShape;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
@@ -89,6 +88,16 @@ public abstract class ShaclConstraint {
 		errors++;
 		LOG.error("Violation {}", violation);
 	}	
+
+	/**
+	 * Add a violation.
+	 * 
+	 * @param constraint
+	 * @param s subject causing the violation
+	 */
+	protected void addViolation(ShaclConstraint constraint, IRI s) {
+		addViolation(new ShaclViolation(constraint, s, null, null));		
+	}
 	
 	/**
 	 * Add a violation.

@@ -41,3 +41,11 @@ ex:CdNodeShape
         sh:languageIn ("nl" "fr") ;
         sh:uniqueLang true ;
     ] .
+
+ex:DvdNodeShape
+    a sh:NodeShape ;
+    sh:targetClass ex:DvdClass ;
+    sh:property [
+        sh:path dcterms:related ; 
+        sh:nodeKind sh:IRI ;
+    ] .

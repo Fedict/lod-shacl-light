@@ -28,6 +28,7 @@ package be.fedict.lod.shacl.parser;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyCount;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyDatatype;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyNodekind;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
@@ -91,6 +92,21 @@ public class ShaclParser {
 		
 		return (type == null) ? null 
 				: new ShaclConstraintPropertyDatatype(type);
+	}
+	
+	/**
+	 * Parse to ShaclConstraint
+	 * 
+	 * @param m
+	 * @return rule or null
+	 * @throws ShaclParserException 
+	 */
+	private static ShaclConstraintPropertyNodekind parseKind(Model m) 
+												throws ShaclParserException {
+		IRI kind = ShaclParserHelper.asIRI(m, SHACL.NODE_KIND);
+		
+		return (kind == null) ? null 
+				: new ShaclConstraintPropertyNodekind(kind);
 	}
 	
 	/**
@@ -181,9 +197,10 @@ public class ShaclParser {
 				
 				propShape.addConstraint(parseCount(constraints));
 				propShape.addConstraint(parseType(constraints));
+				propShape.addConstraint(parseKind(constraints));
 				propShape.addConstraint(parseString(constraints));
 				propShape.addConstraint(parseStringLang(constraints, m));
-
+				
 				nodeShape.addProperty(propShape);
 			}
 			shapes.add(nodeShape);

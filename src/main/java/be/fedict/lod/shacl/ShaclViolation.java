@@ -25,6 +25,7 @@
  */
 package be.fedict.lod.shacl;
 
+import be.fedict.lod.shacl.constraints.ShaclConstraint;
 import be.fedict.lod.shacl.shapes.ShaclShape;
 
 import java.util.Map;
@@ -41,17 +42,17 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
  * @author Bart.Hanssens
  */
 public class ShaclViolation {
-	private final ShaclShape shape;
+	private final ShaclConstraint constraint;
 	private final Resource subj;
 	private final IRI pred;
 	private final Value obj;
 	
 	private final ValueFactory F = SimpleValueFactory.getInstance();
 	
-
 	@Override
 	public String toString() {
-		return String.format("[%s %s %s]", 
+		return String.format("%s (%s) [%s %s %s]", 
+			constraint.getClass().getSimpleName(), constraint.getShape().getID(), 
 			(subj != null) ? subj : "", (pred != null) ? pred : "", (obj != null) ? obj : "");
 	}
 	
@@ -63,36 +64,27 @@ public class ShaclViolation {
 	public Statement getStatement() {
 		return F.createStatement(subj, pred, obj);
 	}
-	
-	/**
-	 * Get messages from the SHACL Shape.
-	 * 
-	 * @return map of messages (different languages)
-	 */
-	public Map<String,String> getMessages() {
-		return shape.getMessages();
-	}
-			
+
 	/**
 	 * Constructor
 	 * 
-	 * @param shape shape
+	 * @param constraint
 	 * @param stmt RDF triple
 	 */
-	public ShaclViolation(ShaclShape shape, Statement stmt) {
-		this(shape, stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
+	public ShaclViolation(ShaclConstraint constraint, Statement stmt) {
+		this(constraint, stmt.getSubject(), stmt.getPredicate(), stmt.getObject());
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param shape
+	 * @param constraint
 	 * @param s subject
 	 * @param p object
 	 * @param o predicate
 	 */
-	public ShaclViolation(ShaclShape shape, Resource s, IRI p, Value o) {
-		this.shape = shape;
+	public ShaclViolation(ShaclConstraint constraint, Resource s, IRI p, Value o) {
+		this.constraint = constraint;
 		this.subj = s;
 		this.pred = p;
 		this.obj = o;

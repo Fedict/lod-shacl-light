@@ -29,9 +29,6 @@ import be.fedict.lod.shacl.ShaclViolation;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 import be.fedict.lod.shacl.shapes.ShaclShape;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -49,7 +46,7 @@ public abstract class ShaclConstraint {
 	private final static Logger LOG = LoggerFactory.getLogger(ShaclConstraint.class);
 	
 	private ShaclPropertyShape shape;
-	private final List<ShaclViolation> violations = new ArrayList<>();
+	private int errors = 0;
 	
 	/**
 	 * Validate rule
@@ -58,23 +55,29 @@ public abstract class ShaclConstraint {
 	 * @return false if validation failed 
 	 */
 	public abstract boolean validate(Model m);
-	
-	/**
-	 * Get all violations.
-	 * 
-	 * @return list of violations 
-	 */
-	public List<ShaclViolation> getViolations() {
-		return this.violations;
-	}
 
-	
 	public ShaclPropertyShape getShape() {
 		return this.shape;
 	}
 	
 	public void setShape(ShaclPropertyShape shape) {
 		this.shape = shape;
+	}
+
+	/**
+	 * Clear the violations counter
+	 */
+	public void clearViolations() {
+		this.errors = 0;
+	}
+	
+	/**
+	 * Check the violations counter
+	 * 
+	 * @return true when violations occurred
+	 */
+	public boolean hasViolations() {
+		return (this.errors > 0);
 	}
 	
 	/**
@@ -83,28 +86,28 @@ public abstract class ShaclConstraint {
 	 * @param violation 
 	 */
 	protected void addViolation(ShaclViolation violation) {
-		LOG.warn("Violation {}", violation);
-		violations.add(violation);
+		errors++;
+		LOG.error("Violation {}", violation);
 	}	
 	
 	/**
 	 * Add a violation.
 	 * 
-	 * @param shape shape
+	 * @param constraint
 	 * @param s statement causing the violation
 	 */
-	protected void addViolation(ShaclShape shape, Statement s) {
-		addViolation(new ShaclViolation(shape, s));		
+	protected void addViolation(ShaclConstraint constraint, Statement s) {
+		addViolation(new ShaclViolation(constraint, s));		
 	}
 
 	/**
 	 * Add a violation.
 	 * 
-	 * @param shape shape
+	 * @param constraint constraint
 	 * @param s subject
 	 * @param p predicate
 	 */
-	protected void addViolation(ShaclShape shape, Resource s, IRI p) {
-		addViolation(new ShaclViolation(shape, s, p, null));
+	protected void addViolation(ShaclConstraint constraint, Resource s, IRI p) {
+		addViolation(new ShaclViolation(constraint, s, p, null));
 	}
 }

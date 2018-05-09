@@ -31,6 +31,7 @@ import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.datatypes.XMLDatatypeUtil;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 /**
@@ -46,10 +47,22 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 							this.getClass().getSimpleName(), getPath(), datatype);
 	}
 	
+	/**
+	 * Get the data type
+	 * 
+	 * @return 
+	 */
 	public IRI getDataType() {
 		return this.datatype;
 	}
 	
+	/**
+	 * Validate the data type
+	 * 
+	 * @param v object value
+	 * @param datatype required datatype
+	 * @return true when valid
+	 */
 	private boolean validateDataType(Value v, IRI datatype) {
 		if (v == null) {
 			return false;
@@ -57,9 +70,10 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 		if (! (v instanceof Literal)) {
 			return false;
 		}
-		
+		// compare datatypes, also accepting language string type if checking for regular string
 		IRI t = ((Literal) v).getDatatype();
-		if (! datatype.equals(t)) {
+		if (!datatype.equals(t) && 
+			!(datatype.equals(XMLSchema.STRING) && t.equals(RDF.LANGSTRING))) {
 			return false;
 		}
 		
@@ -88,12 +102,14 @@ public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 	
 	@Override
 	public boolean validate(Model m) {
+		clearViolations();
+		
 		for(Statement s: m) {
 			if (! validateDataType(s.getObject(), this.datatype)) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 			}
 		}
-		return getViolations().isEmpty();
+		return hasViolations();
 	}
 	
 	/**

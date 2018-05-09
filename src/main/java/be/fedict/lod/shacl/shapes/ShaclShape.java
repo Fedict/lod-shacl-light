@@ -25,12 +25,6 @@
  */
 package be.fedict.lod.shacl.shapes;
 
-import be.fedict.lod.shacl.constraints.ShaclConstraint;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.rdf4j.model.Resource;
 
@@ -40,25 +34,7 @@ import org.eclipse.rdf4j.model.Resource;
  */
 public abstract class ShaclShape {
 	private final Resource id;
-	private final Map<String,String> messages = new HashMap<>();
-
-
-	public Map<String,String> getMessages() {
-		return this.messages;
-	}
-	
-	public String getMessage(String lang) {
-		return messages.get(lang);
-	}
-	
-	public void setMessage(String lang, String message) {
-		if (message == null) {
-			messages.remove(lang);
-		}
-		messages.put(lang, message);
-	}
-	
-	
+		
 	public Resource getID() {
 		return this.id;
 	}

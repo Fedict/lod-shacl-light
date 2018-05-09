@@ -51,28 +51,30 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 
 	@Override
 	public boolean validate(Model m) {
+		clearViolations();
+		
 		for (Statement s: m) {
 			Value v = s.getObject();
 			if (! (v instanceof Literal)) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 				continue;
 			}
 			Literal l = (Literal) v;
 			if (! l.getDatatype().equals(XMLSchema.STRING)) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 			}
 			
 			String str = l.getLabel();
 			if (str.length() < min || str.length() > max) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 				continue;
 			}
 				
-			if (pattern != null && ! pattern.matcher(str).matches()) {
-				addViolation(getShape(), s);
+			if (pattern != null && !pattern.matcher(str).matches()) {
+				addViolation(this, s);
 			}
 		}
-		return getViolations().isEmpty();
+		return hasViolations();
 	}
 	
 	/**

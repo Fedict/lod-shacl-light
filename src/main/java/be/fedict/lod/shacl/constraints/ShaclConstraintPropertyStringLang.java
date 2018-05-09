@@ -25,6 +25,9 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 
@@ -46,30 +49,38 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 
 	@Override
 	public String toString() {
-		return String.format("%s [path=%s, langs=%s]",
-							this.getClass().getSimpleName(), getPath(), langs);
+		return String.format("%s [path=%s, langs=%s, unique=%s]",
+							this.getClass().getSimpleName(), getPath(), langs, unique);
 	}
 	
 	@Override
 	public boolean validate(Model m) {
+		clearViolations();
+		
+		Set<String> uniqs = new HashSet<>();
+		
 		for (Statement s: m) {
 			Value v = s.getObject();
 			if (! (v instanceof Literal)) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 				continue;
 			}
 			
 			Literal l = (Literal) v;
 			IRI datatype = l.getDatatype();
 			if (!datatype.equals(XMLSchema.STRING) && !datatype.equals(RDF.LANGSTRING)) {
-				addViolation(getShape(), s);
+				addViolation(this, s);
 				continue;
 			}
-			if (! langs.contains(l.getLanguage().orElse(""))) {
-				addViolation(getShape(), s);
+			String lang = l.getLanguage().orElse("");
+			if (! langs.contains(lang)) {
+				addViolation(this, s);
+			}
+			if (unique == true && !uniqs.add(lang)) {
+				addViolation(this, s.getSubject(), s.getPredicate());
 			}
 		}
-		return getViolations().isEmpty();
+		return hasViolations();
 	}
 	
 	/**

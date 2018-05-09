@@ -35,7 +35,6 @@ import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,16 +54,6 @@ import org.eclipse.rdf4j.rio.Rio;
  */
 public class ShaclValidator {
 	private final Set<ShaclNodeShape> shapes; 
-	private final List<ShaclViolation> violations = new ArrayList<>();
-	
-	/**
-	 * Get the list of violations (empty list when there are no violations)
-	 * 
-	 * @return list of violations
-	 */
-	public List<ShaclViolation> getViolations() {
-		return this.violations;
-	}
 
 	/**
 	 * Validate an RDF file.
@@ -75,11 +64,10 @@ public class ShaclValidator {
 	 */
 	public boolean validate(InputStream is, RDFFormat fmt) throws IOException {
 		Model m = Rio.parse(is, "http://localhost", fmt);
-		if (m == null) { throw new IOException(); }
 		return validate(m);
 	}
 	
-		/**
+	/**
 	 * Select statements from model 
 	 * 
 	 * @param m model
@@ -104,7 +92,7 @@ public class ShaclValidator {
 	 * @return false in case of violations
 	 */
 	public boolean validate(Model m) {
-		violations.clear();
+		int errors = 0;
 		
 		for (ShaclNodeShape n: shapes) {
 			Set<Resource> targets = ShaclParserHelper.getTargets(m, n);
@@ -127,13 +115,12 @@ public class ShaclValidator {
 					
 					Model m2 = select(m, targets, path);
 					if (! c.validate(m2)) {
-						violations.addAll(c.getViolations());
-						c.getViolations().clear();
+						errors++;
 					}
 				}
 			}
 		}
-		return getViolations().isEmpty();
+		return (errors == 0);
 	}
 
 	/**
@@ -145,7 +132,6 @@ public class ShaclValidator {
 	 */
 	public ShaclValidator(InputStream is, RDFFormat fmt) throws IOException {
 		Model m = Rio.parse(is, "http://localhost", fmt);
-				if (m == null) { throw new IOException(); }
 		this.shapes = ShaclParser.parse(m);
 	}
 

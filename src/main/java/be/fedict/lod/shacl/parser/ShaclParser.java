@@ -33,14 +33,11 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyValue;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
-import java.io.File;
-import java.io.IOException;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;

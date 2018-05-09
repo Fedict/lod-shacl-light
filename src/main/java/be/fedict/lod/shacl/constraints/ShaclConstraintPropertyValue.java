@@ -38,7 +38,7 @@ import org.eclipse.rdf4j.model.util.Models;
  * @author Bart.Hanssens
  */
 public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
-	private Value value;
+	private final Value value;
 	
 	@Override
 	public String toString() {

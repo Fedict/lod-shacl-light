@@ -71,7 +71,7 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 				continue;
 			}
 			String lang = l.getLanguage().orElse("");
-			if (! langs.contains(lang)) {
+			if (!langs.isEmpty() && !langs.contains(lang)) {
 				addViolation(this, s);
 			}
 			if (unique == true && !uniqs.add(lang)) {

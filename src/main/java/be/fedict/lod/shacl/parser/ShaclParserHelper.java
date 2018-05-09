@@ -100,8 +100,10 @@ public class ShaclParserHelper {
 	}
 	
 	/**
+	 * Get a collection a set of strings
 	 * 
 	 * @param m
+	 * @param head
 	 * @return 
 	 */
 	public static Set<String> collectionAsStrings(Model m, Resource head) {

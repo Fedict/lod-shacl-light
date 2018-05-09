@@ -25,64 +25,68 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.regex.Pattern;
+
+import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 /**
- * Check if a property occurs between min and max times.
+ * Check if object value follows language count and pattern.
  * 
- * @author Bart Hanssens
+ * @author Bart.Hanssens
  */
-public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {	
+public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
 	private final int min;
 	private final int max;
-	
+	private final Pattern pattern;
+
 	@Override
 	public String toString() {
-		return String.format("%s [path=%s, min=%d, max=%d]",
-							this.getClass().getSimpleName(), getPath(), min, max);
+		return String.format("%s [path=%s, min=%d, max=%d, pattern=%s]",
+			this.getClass().getSimpleName(), getPath(), min, max, (pattern != null) ? pattern : "<none>");
 	}
-	
-	/**
-	 * Get minimum number of occurrences
-	 * 
-	 * @return 0 or more
-	 */
-	public int getMin() {
-		return this.min;
-	}
-	
-	/**
-	 * Get maximum number of occurrences
-	 * 
-	 * @return max(int) or less
-	 */
-	public int getMax() {
-		return this.max;
-	}
-	
+
 	@Override
 	public boolean validate(Model m) {
 		clearViolations();
-
-		for (Resource subj: m.subjects()) {
-			int cnt = m.filter(subj, getPath(), null).size();
-			if (cnt < min || cnt > max) {			
-				addViolation(this, subj, getPath());
+		
+		for (Statement s: m) {
+			Value v = s.getObject();
+			if (! (v instanceof Literal)) {
+				addViolation(this, s);
+				continue;
+			}
+			Literal l = (Literal) v;
+			if (! l.getDatatype().equals(XMLSchema.STRING)) {
+				addViolation(this, s);
+			}
+			
+			String str = l.getLabel();
+			if (str.length() < min || str.length() > max) {
+				addViolation(this, s);
+				continue;
+			}
+				
+			if (pattern != null && !pattern.matcher(str).matches()) {
+				addViolation(this, s);
 			}
 		}
-
 		return !hasViolations();
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param min minimum count
+	 * @param min minium count
 	 * @param max maximum count
+	 * @param pattern string pattern
 	 */
-	public ShaclConstraintPropertyCount(int min, int max) {
+	public ShaclConstraintPropertyValue(int min, int max, Pattern pattern) {
 		this.min = min;
 		this.max = max;
+		this.pattern = pattern;
 	}
 }

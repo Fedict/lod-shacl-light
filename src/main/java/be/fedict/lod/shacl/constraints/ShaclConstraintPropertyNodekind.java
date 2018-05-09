@@ -66,7 +66,7 @@ public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 		if (v == null) {
 			return false;
 		}
-	
+
 		if (v instanceof IRI) {
 			return (nodekind.equals(SHACL.IRI) || 
 					nodekind.equals(SHACL.IRI_OR_LITERAL) ||
@@ -88,7 +88,7 @@ public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 	@Override
 	public boolean validate(Model m) {
 		clearViolations();
-		
+		System.err.println("Model " + m.size());
 		for(Statement s: m) {
 			if (! validateNodeKind(s.getObject(), this.nodekind)) {
 				addViolation(this, s);

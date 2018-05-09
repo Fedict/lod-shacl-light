@@ -37,7 +37,7 @@ import org.junit.Test;
  *
  * @author Bart Hanssens
  */
-public class ShaclConstraintPropertyNodeTest extends ShaclConstraintTest {
+public class ShaclConstraintPropertyNodekindTest extends ShaclConstraintTest {
 	@Test
 	public void nodekindOk() throws IOException {
 		assertTrue("must be valid", validate("nodekind-ok.ttl"));

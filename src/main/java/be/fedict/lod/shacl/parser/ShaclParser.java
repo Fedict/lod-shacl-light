@@ -103,7 +103,7 @@ public class ShaclParser {
 	 */
 	private static ShaclConstraintPropertyNodekind parseKind(Model m) 
 												throws ShaclParserException {
-		IRI kind = ShaclParserHelper.asIRI(m, SHACL.NODE_KIND);
+		IRI kind = ShaclParserHelper.asIRI(m, SHACL.NODE_KIND_PROP);
 		
 		return (kind == null) ? null 
 				: new ShaclConstraintPropertyNodekind(kind);

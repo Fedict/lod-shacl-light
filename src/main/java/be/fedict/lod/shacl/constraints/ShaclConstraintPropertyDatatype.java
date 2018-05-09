@@ -35,8 +35,9 @@ import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 /**
- *
- * @author Bart.Hanssens
+ * Check the property data type
+ * 
+ * @author Bart Hanssens
  */
 public class ShaclConstraintPropertyDatatype extends ShaclConstraintProperty {
 	private final IRI datatype;

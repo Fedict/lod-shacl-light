@@ -25,6 +25,7 @@
  */
 package be.fedict.lod.shacl.parser;
 
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyClass;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyCount;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyDatatype;
@@ -65,7 +66,7 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return rule or null
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyCount parseCount(Model m) 
@@ -81,7 +82,7 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return rule or null
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyDatatype parseType(Model m) 
@@ -96,7 +97,7 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return rule or null
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyNodekind parseKind(Model m) 
@@ -111,7 +112,22 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return rule or null
+	 * @return constraint or null
+	 * @throws ShaclParserException 
+	 */
+	private static ShaclConstraintPropertyClass parseClass(Model m) 
+												throws ShaclParserException {
+		IRI cl = ShaclParserHelper.asIRI(m, SHACL.CLASS);
+		
+		return (cl == null) ? null 
+				: new ShaclConstraintPropertyClass(cl);
+	}
+	
+	/**
+	 * Parse to ShaclConstraint
+	 * 
+	 * @param m
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyValue parseValue(Model m) 
@@ -126,7 +142,7 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return rule or null
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyString parseString(Model m)
@@ -142,9 +158,10 @@ public class ShaclParser {
 	}
 
 	/**
+	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
-	 * @return
+	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
 	private static ShaclConstraintPropertyStringLang parseStringLang(Model m, Model m2)

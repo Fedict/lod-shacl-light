@@ -37,10 +37,8 @@ import java.io.FileInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;

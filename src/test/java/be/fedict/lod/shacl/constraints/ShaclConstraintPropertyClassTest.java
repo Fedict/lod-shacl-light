@@ -25,48 +25,26 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import java.util.Set;
-import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.util.Models;
-import org.eclipse.rdf4j.model.vocabulary.RDFS;
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;	
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 
 /**
- * Check if subject is of a certain RDF class.
- * 
+ *
  * @author Bart Hanssens
  */
-public class ShaclConstraintPropertyClass extends ShaclConstraintProperty {
-	private final IRI cl;
-	
-	@Override
-	public String toString() {
-		return String.format("%s [path=%s, class=%s]",
-			this.getClass().getSimpleName(), getPathStr(), cl);
-	}
-
-	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-		
-		Set<IRI> subjs = Models.subjectIRIs(m);
-		
-		for(IRI subj: subjs) {
-			// check if at least one class matches the required one 
-			Model m2 = m.filter(subj, RDFS.CLASS, cl);
-			if (m2 == null || m2.isEmpty()) {
-				addViolation(this, subj);
-			}
-		}
-		return !hasViolations();
+public class ShaclConstraintPropertyClassTest extends ShaclConstraintTest {
+	@Test
+	public void classOk() throws IOException {
+		assertTrue("must be valid", validate("class-ok.ttl"));
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param cl RDF class
-	 */
-	public ShaclConstraintPropertyClass(IRI cl) {
-		this.cl = cl;
+	@Test
+	public void classMissing() throws IOException {
+		assertFalse("not reporting missing class", validate("class-missing.ttl"));
 	}
 }

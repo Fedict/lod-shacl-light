@@ -62,3 +62,9 @@ ex:ComicNodeShape
         sh:path dcterms:related ; 
         sh:hasValue ex:Dvd1 ;
     ] .
+
+ex:BookletClassShape
+    a sh:NodeShape ;
+    sh:property [
+        sh:class ex:BookClass ;
+    ] .

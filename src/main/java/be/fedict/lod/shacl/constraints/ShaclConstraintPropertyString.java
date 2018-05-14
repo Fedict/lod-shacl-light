@@ -46,7 +46,8 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 	@Override
 	public String toString() {
 		return String.format("%s [path=%s, min=%d, max=%d, pattern=%s]",
-			this.getClass().getSimpleName(), getPath(), min, max, (pattern != null) ? pattern : "<none>");
+			this.getClass().getSimpleName(), getPathStr(), min, max, 
+			(pattern != null) ? pattern : "<none>");
 	}
 
 	@Override

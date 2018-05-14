@@ -25,6 +25,7 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 
@@ -40,7 +41,7 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 	@Override
 	public String toString() {
 		return String.format("%s [path=%s, min=%d, max=%d]",
-							this.getClass().getSimpleName(), getPath(), min, max);
+							this.getClass().getSimpleName(), getPathStr(), min, max);
 	}
 	
 	/**

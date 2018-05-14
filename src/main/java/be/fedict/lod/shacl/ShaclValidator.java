@@ -31,11 +31,16 @@ import be.fedict.lod.shacl.parser.ShaclParser;
 import be.fedict.lod.shacl.parser.ShaclParserHelper;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
@@ -54,24 +59,12 @@ import org.eclipse.rdf4j.rio.Rio;
  */
 public class ShaclValidator {
 	private final Set<ShaclNodeShape> shapes; 
-
-	/**
-	 * Validate an RDF file.
-	 * 
-	 * @param is inputstream
-	 * @param fmt format
-	 * @return false in case of violations
-	 */
-	public boolean validate(InputStream is, RDFFormat fmt) throws IOException {
-		Model m = Rio.parse(is, "http://localhost", fmt);
-		return validate(m);
-	}
 	
 	/**
 	 * Select statements from model 
 	 * 
 	 * @param m model
-	 * @param s subject
+	 * @param s set of subjects
 	 * @param p predicate
 	 * @return filtered model
 	 */
@@ -124,9 +117,52 @@ public class ShaclValidator {
 	}
 
 	/**
-	 * Constructor
+	 * Validate a file
+	 * 
+	 * @param f
+	 * @return false in case of violations
+	 * @throws IOException 
+	 */
+	public boolean validate(File f) throws IOException {
+		RDFFormat fmt = Rio.getParserFormatForFileName(f.getName())
+							.orElseThrow(() -> new IOException("File type not supported"));
+		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f))) {
+			return validate(bis, fmt);
+		}
+	}
+	
+	/**
+	 * Validate an RDF inputstream
 	 * 
 	 * @param is inputstream
+	 * @param fmt format
+	 * @return false in case of violations
+	 * @throws IOException
+	 */
+	public boolean validate(InputStream is, RDFFormat fmt) throws IOException {
+		Model m = Rio.parse(is, "http://localhost", fmt);
+		return validate(m);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param f SHACL file
+	 * @throws java.io.IOException
+	 */
+	public ShaclValidator(File f) throws IOException {
+		RDFFormat fmt = Rio.getParserFormatForFileName(f.getName())
+							.orElseThrow(() -> new IOException("File type not supported"));
+		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f))) {
+			Model m = Rio.parse(bis, "http://localhost", fmt);
+			this.shapes = ShaclParser.parse(m);
+		}
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param is SHACL inputstream
 	 * @param fmt format
 	 * @throws IOException 
 	 */

@@ -43,7 +43,7 @@ public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 	@Override
 	public String toString() {
 		return String.format("%s [path=%s, kind=%s]",
-							this.getClass().getSimpleName(), getPath(), nodekind);
+							this.getClass().getSimpleName(), getPathStr(), nodekind);
 	}
 	
 	/**

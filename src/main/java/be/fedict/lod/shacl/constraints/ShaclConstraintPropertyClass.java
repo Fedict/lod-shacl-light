@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Bart Hanssens <bart.hanssens@fedict.be>
+ * Copyright (c) 2018, Bart Hanssens <bart.hanssens@fedict.be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,61 +25,39 @@
  */
 package be.fedict.lod.shacl.constraints;
 
-import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.util.Models;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
-import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
+import org.eclipse.rdf4j.model.vocabulary.RDFS;
 
 /**
- * Check if object value follows language rules.
+ * Check if subject is of a certain RDF class.
  * 
  * @author Bart Hanssens
  */
-public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
-	private final Set<String> langs;
-	private final boolean unique;
-
+public class ShaclConstraintPropertyClass extends ShaclConstraintProperty {
+	private final IRI cl;
+	
 	@Override
 	public String toString() {
-		return String.format("%s [path=%s, langs=%s, unique=%s]",
-							this.getClass().getSimpleName(), getPathStr(), langs, unique);
+		return String.format("%s [path=%s, class=%s]",
+			this.getClass().getSimpleName(), getPathStr(), cl);
 	}
-	
+
 	@Override
 	public boolean validate(Model m) {
 		clearViolations();
 		
 		Set<IRI> subjs = Models.subjectIRIs(m);
-		for (IRI subj: subjs) {
-			Set<String> uniqs = new HashSet<>();
 		
-			for (Statement s: m.filter(subj, null, null)) {
-				Value v = s.getObject();
-				if (! (v instanceof Literal)) {
-					addViolation(this, s);
-					continue;
-				}
-			
-				Literal l = (Literal) v;
-				IRI datatype = l.getDatatype();
-				if (!datatype.equals(XMLSchema.STRING) && !datatype.equals(RDF.LANGSTRING)) {
-					addViolation(this, s);
-					continue;
-				}
-				String lang = l.getLanguage().orElse("");
-				if (!langs.isEmpty() && !langs.contains(lang)) {
-					addViolation(this, s);
-				}
-				if (unique == true && !uniqs.add(lang)) {
-					addViolation(this, s.getSubject(), s.getPredicate());
-				}
+		for(IRI subj: subjs) {
+			// check if at least one class matches the required one 
+			Model m2 = m.filter(subj, RDFS.CLASS, cl);
+			if (m2 == null || m2.isEmpty()) {
+				addViolation(this, subj);
 			}
 		}
 		return !hasViolations();
@@ -88,11 +66,9 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 	/**
 	 * Constructor
 	 * 
-	 * @param langs set language codes
-	 * @param unique only one instance per language
+	 * @param cl RDF class
 	 */
-	public ShaclConstraintPropertyStringLang(Set<String> langs, boolean unique) {
-		this.langs = langs;
-		this.unique = unique;
+	public ShaclConstraintPropertyClass(IRI cl) {
+		this.cl = cl;
 	}
 }

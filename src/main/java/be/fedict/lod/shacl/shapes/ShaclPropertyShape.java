@@ -26,10 +26,13 @@
 package be.fedict.lod.shacl.shapes;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

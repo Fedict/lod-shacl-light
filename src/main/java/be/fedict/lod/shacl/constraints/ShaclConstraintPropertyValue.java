@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Bart Hanssens <bart.hanssens@fedict.be>
+ * Copyright (c) 2018, Bart Hanssens <bart.hanssens@fedict.be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
 	@Override
 	public String toString() {
 		return String.format("%s [path=%s, value=%s]",
-			this.getClass().getSimpleName(), getPath(), value);
+			this.getClass().getSimpleName(), getPathStr(), value);
 	}
 
 	@Override
@@ -53,16 +53,9 @@ public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
 		Set<IRI> subjs = Models.subjectIRIs(m);
 		
 		for(IRI subj: subjs) {
-			// check if at least one triple has the specified value 
-			boolean hasval = false;
-			for (Statement s: m.filter(subj, null, null)) {
-				Value v = s.getObject();
-				if (value.equals(v)) {
-					hasval = true;
-					break;
-				}
-			}
-			if (hasval == false) {
+			// check if at least one triple has the specified value
+			Model m2 = m.filter(subj, getPath(), value);
+			if (m2 == null || m2.isEmpty()) {
 				addViolation(this, subj);
 			}
 		}

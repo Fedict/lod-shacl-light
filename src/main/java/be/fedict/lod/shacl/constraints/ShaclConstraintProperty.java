@@ -28,11 +28,22 @@ package be.fedict.lod.shacl.constraints;
 import org.eclipse.rdf4j.model.IRI;
 
 /**
- *
+ * Abstract SHACL Property Shape Constraint.
+ * 
  * @author Bart Hanssens
  */
 public abstract class ShaclConstraintProperty extends ShaclConstraint {
 	public IRI getPath() {
 		return getShape().getPath();
+	}
+	
+	/**
+	 * Get property constraint path as string.
+	 * 
+	 * @return string representation of path or empty string
+	 */
+	public String getPathStr() {
+		IRI path = getPath();
+		return (path != null) ? path.toString() : "";
 	}
 }

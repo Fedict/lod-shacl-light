@@ -224,10 +224,8 @@ public class ShaclParser {
 				
 				ShaclPropertyShape propShape = new ShaclPropertyShape(propId);
 				propShape.setPath(path);
-
-			/*	ShaclConstraintPropertyDatatype datatype = parseType(constraints);
-				propShape.setDatatype(datatype.getDataType()); */
-				
+		
+				propShape.addConstraint(parseClass(constraints));	
 				propShape.addConstraint(parseCount(constraints));
 				propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseKind(constraints));

@@ -25,10 +25,12 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
@@ -51,9 +53,7 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 	}
 
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-		
+	protected void validate(Model m, Set<Resource> targets) {
 		for (Statement s: m) {
 			Value v = s.getObject();
 			if (! (v instanceof Literal)) {
@@ -75,7 +75,6 @@ public class ShaclConstraintPropertyString extends ShaclConstraintProperty {
 				addViolation(this, s);
 			}
 		}
-		return !hasViolations();
 	}
 	
 	/**

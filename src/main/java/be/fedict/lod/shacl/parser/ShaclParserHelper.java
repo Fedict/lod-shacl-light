@@ -39,9 +39,10 @@ import org.eclipse.rdf4j.model.util.RDFCollections;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import be.fedict.lod.shacl.targets.ShaclTarget;
+import be.fedict.lod.shacl.targets.ShaclTargetClass;
+import be.fedict.lod.shacl.targets.ShaclTargetNode;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -159,7 +160,7 @@ public class ShaclParserHelper {
 	 * @param nodes target nodes
 	 * @return set of subjects
 	 */
-	public static Set<Resource> getFilteredNodes(Model m, Set<Resource> nodes) {
+/*	public static Set<Resource> getFilteredNodes(Model m, Set<Resource> nodes) {
 		Set<Resource> subjs = new HashSet<>();
 		for(Resource node: nodes) {
 			if (node != null) {
@@ -168,41 +169,5 @@ public class ShaclParserHelper {
 		}
 		return subjs;
 	}
-	
-	/**
-	 * Get subject IRIs by SHACL targetClass
-	 * 
-	 * @param m model
-	 * @param classes target classes
-	 * @return set of subjects
-	 */
-	public static Set<Resource> getFilteredClasses(Model m, Set<IRI> classes) {
-		Set<Resource> subjs = new HashSet<>();
-		for(Resource cl: classes) {
-			if (cl != null) {
-				subjs.addAll(m.filter(null, RDF.TYPE, cl).subjects());
-			}
-		}
-		return subjs;
-	}
-	
-	/**
-	 * Get subject IRIs of the targets of a shape
-	 * 
-	 * @param m model
-	 * @param shape shape
-	 * @return set of subjects 
-	 */
-	public static Set<Resource> getTargets(Model m, ShaclNodeShape shape) {
-		Set<IRI> classes  = shape.getTargetClasses();
-		
-		if (classes == null || classes.isEmpty()) {
-			return m.subjects();
-		}
-		Set<Resource> iris = new HashSet<>();
-		
-		iris.addAll(getFilteredClasses(m, classes));
-		
-		return iris;
-	}
+	*/
 }

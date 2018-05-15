@@ -25,6 +25,7 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -63,17 +64,13 @@ public class ShaclConstraintPropertyCount extends ShaclConstraintProperty {
 	}
 	
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-
-		for (Resource subj: m.subjects()) {
+	protected void validate(Model m, Set<Resource> targets) {
+		for (Resource subj: targets) {
 			int cnt = m.filter(subj, getPath(), null).size();
 			if (cnt < min || cnt > max) {			
 				addViolation(this, subj, getPath());
 			}
 		}
-
-		return !hasViolations();
 	}
 	
 	/**

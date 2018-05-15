@@ -7,8 +7,10 @@ package be.fedict.lod.shacl.shapes;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraintProperty;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
 
 /**
  *
@@ -17,7 +19,6 @@ import org.eclipse.rdf4j.model.Model;
 public class ShaclRulePropertyIgnored extends ShaclConstraintProperty {
 	private final List<IRI> ignored; 
 	
-	@Override
 	public boolean validate(Model m) {
 		return true;
 	}
@@ -26,5 +27,10 @@ public class ShaclRulePropertyIgnored extends ShaclConstraintProperty {
 	public ShaclRulePropertyIgnored(List<IRI> ignored) {
 		super();
 		this.ignored = ignored;
+	}
+
+	@Override
+	protected void validate(Model m, Set<Resource> targets) {
+		// do nothing
 	}
 }

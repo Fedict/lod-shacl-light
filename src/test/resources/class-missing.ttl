@@ -1,5 +1,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix ex: <http://example.com/ns#> .
 
-ex:Booklet1 a ex:BookletClass ;
-    a ex:BookClass .
+ex:Booklet2 a ex:BookletClass ;
+    dcterms:related ex:Book1 .
+
+ex:Book1 a ex:anotherClass .

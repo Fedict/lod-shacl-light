@@ -31,6 +31,7 @@ import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.util.Models;
@@ -53,11 +54,8 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 	}
 	
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-		
-		Set<IRI> subjs = Models.subjectIRIs(m);
-		for (IRI subj: subjs) {
+	protected void validate(Model m, Set<Resource> targets) {
+		for (Resource subj: m.subjects()) {
 			Set<String> uniqs = new HashSet<>();
 		
 			for (Statement s: m.filter(subj, null, null)) {
@@ -82,7 +80,6 @@ public class ShaclConstraintPropertyStringLang extends ShaclConstraintProperty {
 				}
 			}
 		}
-		return !hasViolations();
 	}
 	
 	/**

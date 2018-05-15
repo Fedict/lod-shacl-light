@@ -25,10 +25,12 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import java.util.Set;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.SHACL;
@@ -86,15 +88,12 @@ public class ShaclConstraintPropertyNodekind extends ShaclConstraintProperty {
 	}
 
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-
+	protected void validate(Model m, Set<Resource> targets) {
 		for(Statement s: m) {
 			if (! validateNodeKind(s.getObject(), this.nodekind)) {
 				addViolation(this, s);
 			}
 		}
-		return !hasViolations();
 	}
 	
 	/**

@@ -27,11 +27,13 @@ package be.fedict.lod.shacl.constraints;
 
 import be.fedict.lod.shacl.ShaclViolation;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
+import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,14 +48,7 @@ public abstract class ShaclConstraint {
 	
 	private ShaclPropertyShape shape;
 	private int errors = 0;
-	
-	/**
-	 * Validate rule
-	 * 
-	 * @param m triples to validate
-	 * @return false if validation failed 
-	 */
-	public abstract boolean validate(Model m);
+		
 
 	public ShaclPropertyShape getShape() {
 		return this.shape;
@@ -93,9 +88,19 @@ public abstract class ShaclConstraint {
 	 * Add a violation.
 	 * 
 	 * @param constraint
+	 * @param v value causing the violation
+	 */
+	protected void addViolation(ShaclConstraint constraint, Value v) {
+		addViolation(new ShaclViolation(constraint, null, null, v));		
+	}
+	
+	/**
+	 * Add a violation.
+	 * 
+	 * @param constraint
 	 * @param s subject causing the violation
 	 */
-	protected void addViolation(ShaclConstraint constraint, IRI s) {
+	protected void addViolation(ShaclConstraint constraint, Resource s) {
 		addViolation(new ShaclViolation(constraint, s, null, null));		
 	}
 	
@@ -119,4 +124,6 @@ public abstract class ShaclConstraint {
 	protected void addViolation(ShaclConstraint constraint, Resource s, IRI p) {
 		addViolation(new ShaclViolation(constraint, s, p, null));
 	}
+	
+	public abstract boolean isValid(Model m, Set<Resource> targets);
 }

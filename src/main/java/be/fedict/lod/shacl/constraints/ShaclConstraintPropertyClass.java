@@ -26,9 +26,11 @@
 package be.fedict.lod.shacl.constraints;
 
 import java.util.Set;
+
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.util.Models;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.vocabulary.RDFS;
 
 /**
@@ -46,19 +48,22 @@ public class ShaclConstraintPropertyClass extends ShaclConstraintProperty {
 	}
 
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
+	protected void validate(Model m, Set<Resource> targets) {
+		// Note: sh:class means that the object must be of RDF class type (not the subject)
+		Set<Value> objs = m.objects();
+
+		for(Value obj: objs) {
+			if (! (obj instanceof Resource)) {
+				addViolation(this, obj);
+			} 
 		
-		Set<IRI> subjs = Models.subjectIRIs(m);
-		
-		for(IRI subj: subjs) {
+			Resource subj = (Resource) obj;
 			// check if at least one class matches the required one 
 			Model m2 = m.filter(subj, RDFS.CLASS, cl);
 			if (m2 == null || m2.isEmpty()) {
 				addViolation(this, subj);
 			}
 		}
-		return !hasViolations();
 	}
 	
 	/**

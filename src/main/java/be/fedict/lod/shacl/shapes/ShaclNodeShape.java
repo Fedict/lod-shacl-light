@@ -25,13 +25,20 @@
  */
 package be.fedict.lod.shacl.shapes;
 
+import be.fedict.lod.shacl.targets.ShaclTarget;
+import be.fedict.lod.shacl.targets.ShaclTargetClass;
+import be.fedict.lod.shacl.targets.ShaclTargetNode;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
 
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 /**
  *
@@ -39,18 +46,69 @@ import org.eclipse.rdf4j.model.Resource;
  */
 public class ShaclNodeShape extends ShaclShape {
 	private final List<ShaclPropertyShape> properties = new ArrayList<>();
-	private Set<IRI> targetClasses = new HashSet<>();
+	private Set<ShaclTarget> targets = new HashSet<>();
 	
-	public Set<IRI> getTargetClasses() {
-		return this.targetClasses;
+	@Override
+	public String toString() {
+		return "node=" + getID() + ", targets=" + targets;
 	}
 	
-	public void setTargetClasses(Set<IRI> targets) {
-		this.targetClasses = targets;
+	public Set<ShaclTarget> getTargets() {
+		return this.targets;
+	}
+	
+	public void setTargets(Set<ShaclTarget> targets) {
+		this.targets = targets;
+	}
+	
+	/**
+	 * Get subject IRIs by SHACL targetClass
+	 * 
+	 * @param m model
+	 * @param classes target classes
+	 * @return set of subjects
+	 */
+	public static Set<Resource> getSubjectPerClass(Model m, Set<IRI> classes) {
+		Set<Resource> subjs = new HashSet<>();
+		for(Resource cl: classes) {
+			subjs.addAll(m.filter(null, RDF.TYPE, cl).subjects());
+		}
+		return subjs;
+	}
+	
+	/**
+	 * Get subject IRIs of the targets of a shape
+	 * 
+	 * @param m model
+	 * @return set of subjects 
+	 */
+	public Set<Resource> getTargets(Model m) {
+		if (targets == null) {
+			return m.subjects();
+		}
+
+		Set<Resource> iris = new HashSet<>();
+		
+		Set<IRI> classes = targets.stream()
+									.filter(t -> t instanceof ShaclTargetClass)
+									.map(t -> ((ShaclTargetClass) t).getTargetClass())
+									.collect(Collectors.toSet());
+		if (!classes.isEmpty()) {
+			iris.addAll(getSubjectPerClass(m, classes));
+		}
+		
+		Set<Resource> nodes = targets.stream()
+									.filter(t -> t instanceof ShaclTargetNode)
+									.map(t -> ((ShaclTargetNode) t).getTargetNode())
+									.collect(Collectors.toSet());
+		iris.addAll(nodes);
+		
+		return iris;
 	}
 	
 	public void addProperty(ShaclPropertyShape shape) {
 		properties.add(shape);
+		shape.setNodeShape(this);
 	}
 
 	public List<ShaclPropertyShape> getProperties() {

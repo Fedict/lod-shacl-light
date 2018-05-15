@@ -28,6 +28,7 @@ package be.fedict.lod.shacl.constraints;
 import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.util.Models;
@@ -47,19 +48,14 @@ public class ShaclConstraintPropertyValue extends ShaclConstraintProperty {
 	}
 
 	@Override
-	public boolean validate(Model m) {
-		clearViolations();
-		
-		Set<IRI> subjs = Models.subjectIRIs(m);
-		
-		for(IRI subj: subjs) {
+	protected void validate(Model m, Set<Resource> targets) {
+		for(Resource subj: m.subjects()) {
 			// check if at least one triple has the specified value
 			Model m2 = m.filter(subj, getPath(), value);
 			if (m2 == null || m2.isEmpty()) {
 				addViolation(this, subj);
 			}
 		}
-		return !hasViolations();
 	}
 	
 	/**

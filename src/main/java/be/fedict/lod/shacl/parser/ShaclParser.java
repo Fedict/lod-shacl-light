@@ -34,6 +34,8 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyValue;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
+import be.fedict.lod.shacl.targets.ShaclTarget;
+import be.fedict.lod.shacl.targets.ShaclTargetClass;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -196,9 +198,16 @@ public class ShaclParser {
 			Resource subj = id.getSubject();
 			ShaclNodeShape nodeShape = new ShaclNodeShape((IRI) subj);
 
-			Model targets = m.filter(subj, SHACL.TARGET_CLASS, null);
-			Set<IRI> t = targets.objects().stream().map(v -> (IRI) v).collect(Collectors.toSet());
+			Model t = m.filter(subj, SHACL.TARGET_CLASS, null);
+			if (t != null && !t.isEmpty()) {
+				Set<ShaclTarget> targets = t.objects().stream()
+											.map(v -> new ShaclTargetClass((IRI) v))
+											.collect(Collectors.toSet());
+				nodeShape.setTargets(targets);
+			}
+			/*Set<IRI> t = targets.objects().stream().map(v -> (IRI) v).collect(Collectors.toSet());
 			nodeShape.setTargetClasses(t);
+			*/
 			
 			// Property shapes			
 			Model props = m.filter(subj, SHACL.PROPERTY, null);
@@ -227,10 +236,10 @@ public class ShaclParser {
 		
 				propShape.addConstraint(parseClass(constraints));	
 				propShape.addConstraint(parseCount(constraints));
-				propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseKind(constraints));
 				propShape.addConstraint(parseString(constraints));
 				propShape.addConstraint(parseStringLang(constraints, m));
+				propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseValue(constraints));
 				
 				nodeShape.addProperty(propShape);

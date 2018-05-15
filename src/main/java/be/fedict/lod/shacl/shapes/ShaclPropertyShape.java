@@ -26,16 +26,25 @@
 package be.fedict.lod.shacl.shapes;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.targets.ShaclTarget;
+import be.fedict.lod.shacl.targets.ShaclTargetClass;
+import be.fedict.lod.shacl.targets.ShaclTargetNode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  *
@@ -45,7 +54,16 @@ public class ShaclPropertyShape extends ShaclShape {
 	private final static Logger LOG = LoggerFactory.getLogger(ShaclPropertyShape.class);
 	
 	private final List<ShaclConstraint> constraints = new ArrayList<>();
+	private ShaclNodeShape shape;
 	private IRI path;
+	
+	public ShaclNodeShape getNodeShape() {
+		return this.shape;
+	}
+	
+	public void setNodeShape(ShaclNodeShape shape) {
+		this.shape = shape;
+	}
 	
 	public IRI getPath() {
 		return this.path;

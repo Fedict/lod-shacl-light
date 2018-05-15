@@ -46,7 +46,6 @@ ex:CdNodeShape
         sh:uniqueLang true ;
     ] .
 
-
 ex:DvdNodeShape
     a sh:NodeShape ;
     sh:targetClass ex:DvdClass ;
@@ -65,6 +64,8 @@ ex:ComicNodeShape
 
 ex:BookletClassShape
     a sh:NodeShape ;
+    sh:targetClass ex:BookletClass ;
     sh:property [
+        sh:path dcterms:related ;
         sh:class ex:BookClass ;
     ] .

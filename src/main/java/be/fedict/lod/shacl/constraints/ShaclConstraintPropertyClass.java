@@ -25,13 +25,15 @@
  */
 package be.fedict.lod.shacl.constraints;
 
+import be.fedict.lod.shacl.ShaclValidator;
+
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.vocabulary.RDFS;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 /**
  * Check if subject is of a certain RDF class.
@@ -49,20 +51,17 @@ public class ShaclConstraintPropertyClass extends ShaclConstraintProperty {
 
 	@Override
 	protected void validate(Model m, Set<Resource> targets) {
-		// Note: sh:class means that the object must be of RDF class type (not the subject)
-		Set<Value> objs = m.objects();
-
-		for(Value obj: objs) {
-			if (! (obj instanceof Resource)) {
-				addViolation(this, obj);
-			} 
+		Set<? extends Value> all = ShaclValidator.select(m, targets, getPath()).objects();
+		Set<? extends Value> checked = m.filter(null, RDF.TYPE, cl).subjects();
 		
-			Resource subj = (Resource) obj;
-			// check if at least one class matches the required one 
-			Model m2 = m.filter(subj, RDFS.CLASS, cl);
-			if (m2 == null || m2.isEmpty()) {
-				addViolation(this, subj);
-			}
+		System.err.println("all = " + all);
+		System.err.println("checked = " + checked);
+		
+		all.removeAll(checked);
+		System.err.println("all rem = " + all);
+		
+		for(Value v: all) {
+			addViolation(this, (Resource) v);
 		}
 	}
 	

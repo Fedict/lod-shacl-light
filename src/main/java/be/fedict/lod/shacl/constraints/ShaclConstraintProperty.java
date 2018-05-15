@@ -30,8 +30,6 @@ import java.util.Set;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 
 /**
  * Abstract SHACL Property Shape Constraint.
@@ -52,8 +50,7 @@ public abstract class ShaclConstraintProperty extends ShaclConstraint {
 		IRI path = getPath();
 		return (path != null) ? path.toString() : "";
 	}
-	
-	
+
 	protected abstract void validate(Model m, Set<Resource> targets);
 
 	@Override

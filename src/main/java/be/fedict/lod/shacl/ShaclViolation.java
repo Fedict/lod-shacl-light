@@ -31,12 +31,11 @@ import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 
 /**
- *
- * @author Bart.Hanssens
+ * Helper class for reporting violations
+ * 
+ * @author Bart Hanssens
  */
 public class ShaclViolation {
 	private final ShaclConstraint constraint;
@@ -44,22 +43,11 @@ public class ShaclViolation {
 	private final IRI pred;
 	private final Value obj;
 	
-	private final ValueFactory F = SimpleValueFactory.getInstance();
-	
 	@Override
 	public String toString() {
 		return String.format("%s (%s) [%s %s %s]", 
 			constraint.getClass().getSimpleName(), constraint.getShape().getID(), 
 			(subj != null) ? subj : "", (pred != null) ? pred : "", (obj != null) ? obj : "");
-	}
-	
-	/**
-	 * Get statement that generated a violation.
-	 * 
-	 * @return triple statement 
-	 */
-	public Statement getStatement() {
-		return F.createStatement(subj, pred, obj);
 	}
 
 	/**

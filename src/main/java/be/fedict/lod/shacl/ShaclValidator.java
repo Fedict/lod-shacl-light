@@ -26,6 +26,7 @@
 package be.fedict.lod.shacl;
 
 import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyClass;
 import be.fedict.lod.shacl.parser.ShaclParser;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
@@ -62,7 +63,7 @@ public class ShaclValidator {
 	 * @param p predicate
 	 * @return filtered model
 	 */
-	protected static Model select(Model m, Set<Resource> s, IRI p) {
+	public static Model select(Model m, Set<Resource> s, IRI p) {
 		Model m2 = new LinkedHashModel();
 		for (Statement st: m) {
 			if (s.contains(st.getSubject()) && (p == null || st.getPredicate().equals(p))) {
@@ -87,10 +88,14 @@ public class ShaclValidator {
 			
 			for (ShaclPropertyShape p: properties) {
 				List<ShaclConstraint> constraints = p.getConstraints();
-				Model m2 = select(m, targets, p.getPath());
+				Model filtered = select(m, targets, p.getPath());
 				
 				for (ShaclConstraint c: constraints) {
-					if (! c.isValid(m2, targets)) {
+					Model model = filtered;
+					if (c instanceof ShaclConstraintPropertyClass) {
+						model = m;
+					}
+					if (! c.isValid(model, targets)) {
 						errors++;
 					}
 				}

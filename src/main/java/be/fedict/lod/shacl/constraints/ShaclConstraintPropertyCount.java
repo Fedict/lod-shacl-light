@@ -26,7 +26,7 @@
 package be.fedict.lod.shacl.constraints;
 
 import java.util.Set;
-import org.eclipse.rdf4j.model.IRI;
+
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 

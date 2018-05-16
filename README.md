@@ -20,16 +20,17 @@ if (errors) {
 ## Supported targets
 
 - sh:targetClass
+- sh:targetNode
 
 ## Supported paths
 
-- sh:path
+- sh:path (simple)
 
 ## Supported constraints
 
 - Cardinality: sh:minCount, sh:maxCount
 - String-based: sh:minLength, sh:maxLength, sh:languageIn, sh:uniqueLang
-- Other: sh:hasValue
+- Other: sh:hasValue, sh:nodeKind, sh:class
 
 ## Other
 

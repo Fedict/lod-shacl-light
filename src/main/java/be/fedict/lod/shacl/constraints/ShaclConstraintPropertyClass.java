@@ -54,11 +54,7 @@ public class ShaclConstraintPropertyClass extends ShaclConstraintProperty {
 		Set<? extends Value> all = ShaclValidator.select(m, targets, getPath()).objects();
 		Set<? extends Value> checked = m.filter(null, RDF.TYPE, cl).subjects();
 		
-		System.err.println("all = " + all);
-		System.err.println("checked = " + checked);
-		
 		all.removeAll(checked);
-		System.err.println("all rem = " + all);
 		
 		for(Value v: all) {
 			addViolation(this, (Resource) v);

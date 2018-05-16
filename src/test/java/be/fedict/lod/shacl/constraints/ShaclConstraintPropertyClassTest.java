@@ -42,7 +42,7 @@ public class ShaclConstraintPropertyClassTest extends ShaclConstraintTest {
 	public void classOk() throws IOException {
 		assertTrue("must be valid", validate("class-ok.ttl"));
 	}
-	
+
 	@Test
 	public void classMissing() throws IOException {
 		assertFalse("not reporting missing class", validate("class-missing.ttl"));

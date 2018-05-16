@@ -67,5 +67,5 @@ ex:BookletClassShape
     sh:targetClass ex:BookletClass ;
     sh:property [
         sh:path dcterms:related ;
-        sh:class ex:BookClass ;
+        sh:class ex:PosterClass ;
     ] .

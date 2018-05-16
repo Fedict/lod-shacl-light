@@ -2,7 +2,7 @@
 @prefix ex: <http://example.com/ns#> .
 
 ex:Booklet1 a ex:BookletClass ;
-    dcterms:related ex:Book1 .
+    dcterms:related ex:Poster1 .
 
-ex:Book1 a ex:BookClass ;
+ex:Poster1 a ex:PosterClass ;
     a ex:anotherClass .

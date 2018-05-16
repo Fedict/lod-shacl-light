@@ -91,13 +91,13 @@ public class ShaclValidator {
 				Model filtered = select(m, targets, p.getPath());
 				
 				for (ShaclConstraint c: constraints) {
-					Model model = filtered;
-					if (c instanceof ShaclConstraintPropertyClass) {
-						model = m;
-					}
+					System.err.println(c);
+					Model model = (c instanceof ShaclConstraintPropertyClass) ? m : filtered;
+	
 					if (! c.isValid(model, targets)) {
 						errors++;
 					}
+					System.err.println(errors);
 				}
 			}
 		}

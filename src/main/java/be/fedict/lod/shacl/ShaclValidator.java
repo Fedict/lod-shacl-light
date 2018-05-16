@@ -25,21 +25,18 @@
  */
 package be.fedict.lod.shacl;
 
-import be.fedict.lod.shacl.constraints.ShaclConstraint;
-import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyClass;
 import be.fedict.lod.shacl.parser.ShaclParser;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
-import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import org.eclipse.rdf4j.model.IRI;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -53,7 +50,7 @@ import org.eclipse.rdf4j.rio.Rio;
  * @author Bart Hanssens
  */
 public class ShaclValidator {
-	private final Set<ShaclNodeShape> shapes; 
+	private final Map<Resource,ShaclNodeShape> shapes; 
 	
 	/**
 	 * Select statements from model 
@@ -82,23 +79,10 @@ public class ShaclValidator {
 	public boolean validate(Model m) {
 		int errors = 0;
 		
-		for (ShaclNodeShape n: shapes) {
-			Set<Resource> targets = n.getTargets(m);
-			List<ShaclPropertyShape> properties = n.getProperties();
-			
-			for (ShaclPropertyShape p: properties) {
-				List<ShaclConstraint> constraints = p.getConstraints();
-				Model filtered = select(m, targets, p.getPath());
-				
-				for (ShaclConstraint c: constraints) {
-					System.err.println(c);
-					Model model = (c instanceof ShaclConstraintPropertyClass) ? m : filtered;
-	
-					if (! c.isValid(model, targets)) {
-						errors++;
-					}
-					System.err.println(errors);
-				}
+		for (ShaclNodeShape n: shapes.values()) {
+			// only validate the "unnested" node shapes
+			if (n.getTargets() != null &&! n.getTargets().isEmpty()) {
+				errors += n.validate(m);
 			}
 		}
 		return (errors == 0);
@@ -164,7 +148,7 @@ public class ShaclValidator {
 	 * 
 	 * @param shapes set of node shapes
 	 */
-	public ShaclValidator(Set<ShaclNodeShape> shapes) {
+	public ShaclValidator(Map<Resource,ShaclNodeShape> shapes) {
 		this.shapes = shapes;
 	}
 }

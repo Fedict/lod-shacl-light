@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Bart Hanssens <bart.hanssens@fedict.be>
+ * Copyright (c) 2018, Bart Hanssens <bart.hanssens@fedict.be>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,59 +23,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package be.fedict.lod.shacl.shapes;
+package be.fedict.lod.shacl.constraints;
 
-import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.ShaclValidator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
 
 /**
- *
+ * Check if subject is of a certain RDF class.
+ * 
  * @author Bart Hanssens
  */
-public class ShaclPropertyShape extends ShaclShape {
-	private final static Logger LOG = LoggerFactory.getLogger(ShaclPropertyShape.class);
+public class ShaclConstraintPropertyNode extends ShaclConstraintProperty {
+	private final Resource node;
 	
-	private final List<ShaclConstraint> constraints = new ArrayList<>();
-	private ShaclNodeShape shape;
-	private IRI path;
-	
-	public ShaclNodeShape getNodeShape() {
-		return this.shape;
+	@Override
+	public String toString() {
+		return String.format("%s [path=%s, shape=%s]",
+			this.getClass().getSimpleName(), getPathStr(), node);
+	}
+
+	@Override
+	protected void validate(Model m, Set<Resource> targets) {
+		//
 	}
 	
-	public void setNodeShape(ShaclNodeShape shape) {
-		this.shape = shape;
+	/**
+	 * Constructor
+	 * 
+	 * @param node
+	 */
+	public ShaclConstraintPropertyNode(Resource node) {
+		this.node = node;
 	}
-	
-	public IRI getPath() {
-		return this.path;
-	}
-	
-	public void setPath(IRI path) {
-		this.path = path;
-	}
-	
-	public void addConstraint(ShaclConstraint constraint) {
-		if (constraint != null) {
-			constraint.setShape(this);
-			constraints.add(constraint);
-			LOG.info("Added constraint {}", constraint);
-		}
-	}
-	
-	public List<ShaclConstraint> getConstraints() {
-		return this.constraints;
-	}
-	
-	public ShaclPropertyShape(Resource id) {
-		super(id);
-	}	
 }

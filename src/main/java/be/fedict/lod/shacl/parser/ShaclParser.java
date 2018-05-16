@@ -29,6 +29,7 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyClass;
 import be.fedict.lod.shacl.shapes.ShaclNodeShape;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyCount;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyDatatype;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyNode;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyNodekind;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyString;
 import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyStringLang;
@@ -36,8 +37,12 @@ import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyValue;
 import be.fedict.lod.shacl.shapes.ShaclPropertyShape;
 import be.fedict.lod.shacl.targets.ShaclTarget;
 import be.fedict.lod.shacl.targets.ShaclTargetClass;
+import be.fedict.lod.shacl.targets.ShaclTargetNode;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -102,21 +107,6 @@ public class ShaclParser {
 	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
-	private static ShaclConstraintPropertyNodekind parseKind(Model m) 
-												throws ShaclParserException {
-		IRI kind = ShaclParserHelper.asIRI(m, SHACL.NODE_KIND_PROP);
-		
-		return (kind == null) ? null 
-				: new ShaclConstraintPropertyNodekind(kind);
-	}
-	
-	/**
-	 * Parse to ShaclConstraint
-	 * 
-	 * @param m
-	 * @return constraint or null
-	 * @throws ShaclParserException 
-	 */
 	private static ShaclConstraintPropertyClass parseClass(Model m) 
 												throws ShaclParserException {
 		IRI cl = ShaclParserHelper.asIRI(m, SHACL.CLASS);
@@ -132,14 +122,22 @@ public class ShaclParser {
 	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
-	private static ShaclConstraintPropertyValue parseValue(Model m) 
+	private static ShaclConstraintPropertyNodekind parseKind(Model m) 
 												throws ShaclParserException {
-		Value value = ShaclParserHelper.asValue(m, SHACL.HAS_VALUE);
+		IRI kind = ShaclParserHelper.asIRI(m, SHACL.NODE_KIND_PROP);
 		
-		return (value == null) ? null 
-				: new ShaclConstraintPropertyValue(value);
+		return (kind == null) ? null 
+				: new ShaclConstraintPropertyNodekind(kind);
 	}
 	
+	private static ShaclConstraintPropertyNode parseNode(Model m) 
+											throws ShaclParserException {
+		Resource node = ShaclParserHelper.asResource(m, SHACL.NODE);
+		
+		return (node == null) ? null 
+				: new ShaclConstraintPropertyNode(node);
+	}
+
 	/**
 	 * Parse to ShaclConstraint
 	 * 
@@ -163,6 +161,7 @@ public class ShaclParser {
 	 * Parse to ShaclConstraint
 	 * 
 	 * @param m
+	 * @param m2
 	 * @return constraint or null
 	 * @throws ShaclParserException 
 	 */
@@ -181,43 +180,77 @@ public class ShaclParser {
 	}
 	
 	/**
+	 * Parse to ShaclConstraint
+	 * 
+	 * @param m
+	 * @return constraint or null
+	 * @throws ShaclParserException 
+	 */
+	private static ShaclConstraintPropertyValue parseValue(Model m) 
+												throws ShaclParserException {
+		Value value = ShaclParserHelper.asValue(m, SHACL.HAS_VALUE);
+		
+		return (value == null) ? null 
+				: new ShaclConstraintPropertyValue(value);
+	}
+	
+	
+	public static Set<ShaclTarget> getTargetClasses(Model m, Resource subj) {
+		Model t = m.filter(subj, SHACL.TARGET_CLASS, null);
+		if (t != null && !t.isEmpty()) {
+			return t.objects().stream().map(v -> new ShaclTargetClass((IRI) v))
+										.collect(Collectors.toSet());
+		}
+		return Collections.EMPTY_SET;
+	}
+	
+	public static Set<ShaclTarget> getTargetNodes(Model m, Resource subj) {
+		Model t = m.filter(subj, SHACL.TARGET_NODE, null);
+		if (t != null && !t.isEmpty()) {
+			return t.objects().stream().map(v -> new ShaclTargetNode((Resource) v))
+										.collect(Collectors.toSet());
+		}
+		return Collections.EMPTY_SET;
+	}
+
+	/**
 	 * Parse SHACL model into a list of rules
 	 * 
-	 * @param m model
+	 * @param shacl model
 	 * @return list of rules
 	 * @throws ShaclParserException
 	 */
-	public static Set<ShaclNodeShape> parse(Model m) throws ShaclParserException {
-		Set<ShaclNodeShape> shapes = new HashSet<>();
+	public static Map<Resource,ShaclNodeShape> parse(Model shacl) throws ShaclParserException {
+		Map<Resource,ShaclNodeShape> shapes = new HashMap<>();
 		
 		// Node shapes
-		Model ids = m.filter(null, RDF.TYPE, SHACL.NODE_SHAPE);
-
+		Model ids = shacl.filter(null, RDF.TYPE, SHACL.NODE_SHAPE);
+		
 		for(Statement id: ids) {
 			LOG.info("Parsing node shape {}", id);
 			Resource subj = id.getSubject();
-			ShaclNodeShape nodeShape = new ShaclNodeShape((IRI) subj);
+			ShaclNodeShape nodeShape = new ShaclNodeShape(subj);
 
-			Model t = m.filter(subj, SHACL.TARGET_CLASS, null);
-			if (t != null && !t.isEmpty()) {
-				Set<ShaclTarget> targets = t.objects().stream()
-											.map(v -> new ShaclTargetClass((IRI) v))
-											.collect(Collectors.toSet());
-				nodeShape.setTargets(targets);
+			// Set class targets or node targets
+			Set<ShaclTarget> tcls = getTargetClasses(shacl, subj);
+			if (! tcls.isEmpty()) {
+				nodeShape.setTargets(tcls);
 			}
-			/*Set<IRI> t = targets.objects().stream().map(v -> (IRI) v).collect(Collectors.toSet());
-			nodeShape.setTargetClasses(t);
-			*/
+			
+			Set<ShaclTarget> tns = getTargetNodes(shacl, subj);
+			if (! tns.isEmpty()) {
+				nodeShape.setTargets(tns);
+			}
 			
 			// Property shapes			
-			Model props = m.filter(subj, SHACL.PROPERTY, null);
+			Model props = shacl.filter(subj, SHACL.PROPERTY, null);
 
 			for(Value prop: props.objects()) {
 				LOG.info("Parsing property shape {}", prop);
 				Resource propId = (Resource) prop;
 
 				// Constraints
-				Model constraints = m.filter(propId, null, null);
+				Model constraints = shacl.filter(propId, null, null);
 				
 				boolean disabled = ShaclParserHelper.asBool(constraints, SHACL.DEACTIVATED);
 				if (disabled) {
@@ -237,14 +270,15 @@ public class ShaclParser {
 				propShape.addConstraint(parseClass(constraints));	
 				propShape.addConstraint(parseCount(constraints));
 				propShape.addConstraint(parseKind(constraints));
+				propShape.addConstraint(parseNode(constraints));
 				propShape.addConstraint(parseString(constraints));
-				propShape.addConstraint(parseStringLang(constraints, m));
+				propShape.addConstraint(parseStringLang(constraints, shacl));
 				propShape.addConstraint(parseType(constraints));
 				propShape.addConstraint(parseValue(constraints));
 				
-				nodeShape.addProperty(propShape);
+				nodeShape.addPropertyShape(propShape);
 			}
-			shapes.add(nodeShape);
+			shapes.put(subj,nodeShape);
 		}
 		LOG.info("Added {} node shapes", shapes.size());
 		return shapes;

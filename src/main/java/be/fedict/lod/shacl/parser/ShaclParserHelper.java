@@ -61,6 +61,20 @@ public class ShaclParserHelper {
 				? null 
 				: Models.getPropertyIRI(m, Models.subject(m).get(), p).orElse(null);
 	}
+	
+	/**
+	 * Filter model for a specific property
+	 * 
+	 * @param m model
+	 * @param p predicate of the property
+	 * @return object IRI or null
+	 */
+	public static Resource asResource(Model m, IRI p) {
+		return (m == null || m.isEmpty() || p == null) 
+				? null 
+				: Models.getPropertyResource(m, Models.subject(m).get(), p).orElse(null);
+	}
+	
 	/**
 	 * Filter model for a specific property
 	 * 

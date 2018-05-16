@@ -23,59 +23,34 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package be.fedict.lod.shacl.shapes;
+package be.fedict.lod.shacl;
 
-import be.fedict.lod.shacl.constraints.ShaclConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * Main class
+ * 
  * @author Bart Hanssens
  */
-public class ShaclPropertyShape extends ShaclShape {
-	private final static Logger LOG = LoggerFactory.getLogger(ShaclPropertyShape.class);
-	
-	private final List<ShaclConstraint> constraints = new ArrayList<>();
-	private ShaclNodeShape shape;
-	private IRI path;
-	
-	public ShaclNodeShape getNodeShape() {
-		return this.shape;
-	}
-	
-	public void setNodeShape(ShaclNodeShape shape) {
-		this.shape = shape;
-	}
-	
-	public IRI getPath() {
-		return this.path;
-	}
-	
-	public void setPath(IRI path) {
-		this.path = path;
-	}
-	
-	public void addConstraint(ShaclConstraint constraint) {
-		if (constraint != null) {
-			constraint.setShape(this);
-			constraints.add(constraint);
-			LOG.info("Added constraint {}", constraint);
+public class Main {
+	public static void main(String[] args) {
+		if (args.length < 2) {
+			System.err.println("Usage: <shacl.ttl> <file.rdf>");
+			System.exit(-1);
+		}
+		
+		File shacl = new File(args[0]);
+		File rdf = new File(args[1]);
+		
+		try {
+			ShaclValidator validator = new ShaclValidator(shacl);
+			validator.validate(rdf);
+		} catch (IOException ex) {
+			System.err.println(ex.getMessage());
+			System.exit(1);
 		}
 	}
-	
-	public List<ShaclConstraint> getConstraints() {
-		return this.constraints;
-	}
-	
-	public ShaclPropertyShape(Resource id) {
-		super(id);
-	}	
 }

@@ -25,6 +25,9 @@
  */
 package be.fedict.lod.shacl.shapes;
 
+import static be.fedict.lod.shacl.ShaclValidator.select;
+import be.fedict.lod.shacl.constraints.ShaclConstraint;
+import be.fedict.lod.shacl.constraints.ShaclConstraintPropertyClass;
 import be.fedict.lod.shacl.targets.ShaclTarget;
 import be.fedict.lod.shacl.targets.ShaclTargetClass;
 import be.fedict.lod.shacl.targets.ShaclTargetNode;
@@ -34,9 +37,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
-
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 
@@ -82,7 +85,7 @@ public class ShaclNodeShape extends ShaclShape {
 	 * @param m model
 	 * @return set of subjects 
 	 */
-	public Set<Resource> getTargets(Model m) {
+	public Set<Resource> getTargetIDs(Model m) {
 		if (targets == null) {
 			return m.subjects();
 		}
@@ -106,15 +109,49 @@ public class ShaclNodeShape extends ShaclShape {
 		return iris;
 	}
 	
-	public void addProperty(ShaclPropertyShape shape) {
+	/**
+	 * Add property shape
+	 * 
+	 * @param shape 
+	 */
+	public void addPropertyShape(ShaclPropertyShape shape) {
 		properties.add(shape);
 		shape.setNodeShape(this);
 	}
 
-	public List<ShaclPropertyShape> getProperties() {
+	public int validate(Model m) {
+		int errors = 0;
+		
+		Set<Resource> subjs = getTargetIDs(m);
+		
+		for (ShaclPropertyShape p: properties) {
+			List<ShaclConstraint> constraints = p.getConstraints();
+			Model filtered = select(m, subjs, p.getPath());
+				
+			for (ShaclConstraint c: constraints) {
+				Model model = (c instanceof ShaclConstraintPropertyClass) ? m : filtered;
+	
+				if (! c.isValid(model, subjs)) {
+					errors++;
+				}
+			}
+		}
+		return errors;
+	}
+	/**
+	 * Get property shapes
+	 * 
+	 * @return 
+	 */
+	public List<ShaclPropertyShape> getPropertyShapes() {
 		return this.properties;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param id 
+	 */
 	public ShaclNodeShape(Resource id) {
 		super(id);
 	}
